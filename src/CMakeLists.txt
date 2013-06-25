@@ -17,8 +17,6 @@ SET(pdbntk_src
   ${src}
   )
 
-SET(LIBRARY_OUTPUT_PATH ${pdbntk_SOURCE_DIR}/lib)
-
 ## build release library
 #IF(BUILD_RELEASE)
 add_library (pdbntk STATIC

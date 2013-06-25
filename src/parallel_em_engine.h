@@ -15,14 +15,13 @@ public:
   
   ParallelEmEngine& set_max_iter(int max_inter); 
   
-  void Learn(InfEngine *inf_engine,
-      const std::vector<mocapy::Sequence> &evidence);
+  void Learn(InfEngine *inf_engine, std::vector<mocapy::Sequence> *evidence);
  
 private: 
   static const int kMaxIter = 100;
   int max_iter_;
 
-  void DoEStep(InfEngine *inf_engine, std::vector<mocapy::Sequence> evidence);
+  void DoEStep(InfEngine *inf_engine, std::vector<mocapy::Sequence> *evidence);
   void DoMStep();
 };  
 }
