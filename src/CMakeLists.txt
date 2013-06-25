@@ -10,20 +10,23 @@
 #INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
 #LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
 
+FIND_PACKAGE(OpenMP REQUIRED)
+
+AUX_SOURCE_DIRECTORY(${CMAKE_CURRENT_SOURCE_DIR} src)
 SET(pdbntk_src
- src/parallel_em_engine.cpp 
-)
-#
-#SET(LIBRARY_OUTPUT_PATH ${MOCAPY_SOURCE_DIR}/libs)
-#
+  ${src}
+  )
+
+SET(LIBRARY_OUTPUT_PATH ${pdbntk_SOURCE_DIR}/lib)
+
 ## build release library
 #IF(BUILD_RELEASE)
-add_library (pdbntk1 STATIC
+add_library (pdbntk STATIC
   ${pdbntk_src}
-        )
-      #SET_TARGET_PROPERTIES(pdbntk PROPERTIES COMPILE_FLAGS " -O3 -fPIC -c
-      #-fmessage-length=0 -I${pdbntk_SOURCE_DIR}/src")
-#ENDIF(BUILD_RELEASE)
+)
+
+SET_TARGET_PROPERTIES(pdbntk PROPERTIES COMPILE_FLAGS "-O3 -fPIC -c -fmessage-length=0 -fopenmp")
+      ##ENDIF(BUILD_RELEASE)
 #
 ##IF(BUILD_RELEASE)
 ##add_library (Mocapy SHARED

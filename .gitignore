@@ -3,3 +3,5 @@ CMakeCache*
 build
 CMakeFiles
 Makefile
+libpdbntk.a
+*.swp

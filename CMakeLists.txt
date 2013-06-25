@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 set(CMAKE_LEGACY_CYGWIN_WIN32 0)
 project(pdbntk)
 
+include_directories(lib/include)
 # Recurse into the "src" and "examples" subdirectories. This does not actually
 # cause another cmake executable to run. The same process will walk through
 # the project's entire directory structure.
