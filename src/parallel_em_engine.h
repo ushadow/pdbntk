@@ -3,25 +3,25 @@
 
 #include "mocapy.h"
 
-#include<vector>
+#include <vector>
 
 namespace pdbntk {
 
-class InfEngine;
+class AbstractInfEngine;
 
 class ParallelEmEngine {
 public:
-  ParallelEmEngine();
+  ParallelEmEngine(int max_iter);
   
-  ParallelEmEngine& set_max_iter(int max_inter); 
+  ParallelEmEngine& set_max_iter(int max_iter); 
   
-  void Learn(InfEngine *inf_engine, std::vector<mocapy::Sequence> *evidence);
+  double Iterate(AbstractInfEngine *inf_engine, std::vector<mocapy::Sequence> *evidence);
  
 private: 
   static const int kMaxIter = 100;
   int max_iter_;
 
-  void DoEStep(InfEngine *inf_engine, std::vector<mocapy::Sequence> *evidence);
+  double DoEStep(AbstractInfEngine *inf_engine, std::vector<mocapy::Sequence> *evidence);
   void DoMStep();
 };  
 }

@@ -2,6 +2,7 @@
 #include "mocapy.h" 
 
 #include <stdlib.h>
+#include <iostream>
 #include <stdio.h>
 #include <vector>
 #include <utility>
@@ -22,7 +23,7 @@ int main(void) {
   bool use_shrinkage = true;
 
   // Number of training sequences.
-  int n = 100;
+  int n = 40000;
 
   // Sequence lengths
   int t = 100;
@@ -72,13 +73,14 @@ int main(void) {
   mismask.repeat(t, vec(mocapy::MOCAPY_HIDDEN, mocapy::MOCAPY_OBSERVED));
 
   for (int i = 0; i < n; i++) {
-    pair<mocapy::Sequence, double> seq_ll = tdbn.sample_sequence(t);
-    seq_list.push_back(seq_ll.first);
+    mocapy::Sequence seq(vec(2, t));
+    seq_list.push_back(seq);
     mismask_list.push_back(mismask);
   }
 
-  pdbntk::InfEngine inf_engine;
-  pdbntk::ParallelEmEngine em;
-  em.Learn(&inf_engine, &seq_list); 
+  pdbntk::DummyInfEngine inf_engine;
+  pdbntk::ParallelEmEngine em(10);
+  double loglik = em.Iterate(&inf_engine, &seq_list); 
+  std::cout << "loglik = " << loglik << std::endl;
   return 0;     
 }

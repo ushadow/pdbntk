@@ -3,6 +3,7 @@ set(CMAKE_LEGACY_CYGWIN_WIN32 0)
 project(pdbntk C CXX Fortran)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/lib/include)
+
 SET(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 
