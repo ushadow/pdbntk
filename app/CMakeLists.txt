@@ -9,7 +9,6 @@ SET(Boost_USE_STATIC_LIBS ON)
 FIND_PACKAGE(Boost COMPONENTS serialization program_options thread REQUIRED)
 FIND_PACKAGE(OpenMP REQUIRED)
 
-#
 #FIND_LIBRARY(PTHREAD pthread)
 #
 # Make sure the compiler can find include files from pdbntk.
@@ -45,6 +44,7 @@ LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
 SET(CMAKE_CXX_FLAGS "-O3 -fPIC -Wall -fmessage-length=0 -fopenmp")
 SET(MOCAPYLIB Mocapy)
 SET(PDBNTKLIB pdbntk)
+SET(DAILIB dai)
 #ENDIF(BUILD_RELEASE)
 #
 #IF(BUILD_DEBUG)
@@ -68,7 +68,7 @@ SET(PROGS parallel_em_hmm)
 
 FOREACH(p ${PROGS})
         add_executable(${p} ${p}.cpp)
-        target_link_libraries (${p} ${PDBNTKLIB} ${MOCAPYLIB} ${Boost_SERIALIZATION_LIBRARY} ${LAPACK_LIBRARY} ${CMAKE_FLIB})
+        target_link_libraries (${p} ${PDBNTKLIB} ${MOCAPYLIB} ${DAILIB} ${Boost_SERIALIZATION_LIBRARY} ${LAPACK_LIBRARY} ${CMAKE_FLIB})
 ENDFOREACH(p)
 #
 #FOREACH(p ${PROGS_BOOST_OPTIONS_THREADS})

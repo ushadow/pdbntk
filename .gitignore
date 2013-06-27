@@ -1,4 +1,3 @@
-*.cmake
 CMakeCache*
 build
 CMakeFiles

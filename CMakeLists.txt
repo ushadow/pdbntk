@@ -2,7 +2,8 @@ cmake_minimum_required(VERSION 2.8)
 set(CMAKE_LEGACY_CYGWIN_WIN32 0)
 project(pdbntk C CXX Fortran)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/lib/include)
+SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/lib/include /usr/include)
 
 SET(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
