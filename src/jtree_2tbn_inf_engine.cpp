@@ -24,8 +24,13 @@ std::vector<mocapy::ESSBase*> JTree2TBNInfEngine::GetResetESS() const {
 }
 
 void JTree2TBNInfEngine::Fwd(const Evidence::Observation &o, int t) {
+  /// Computes prior
+
+  /// Clamps the observed nodes.
   for (Evidence::Observation::const_iterator i = o.begin(); i != o.end(); i++)
-    jtree_engine_->clamp(jtree_engine_->fg().findVar(i->first), i->second);
+    jtree_engine_->clamp(jtree_engine_->fg().findNode(i->first), i->second);
+
+  /// Collect evidence to root
 }
 
 

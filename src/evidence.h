@@ -13,8 +13,12 @@
 #ifndef PDBNTK_EVIDENCE_H_
 #define PDBNTK_EVIDENCE_H_
 
+#include "utils.h"
+#include "factor_graph.h"
+
 #include <istream>
 #include <vector>
+#include <map>
 
 namespace pdbntk {
 

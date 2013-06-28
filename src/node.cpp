@@ -1,33 +1,13 @@
-/*
- * Node.cpp
- *
- *  Copyright (C) 2008, Martin Paluszewski, The Bioinformatics Centre, University of Copenhagen.
- *
- *  This file is part of Mocapy++.
- *
- *  Mocapy++ is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU Lesser General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  Mocapy++ is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public License
- *  along with Mocapy++.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
-#include "mocapyexceptions.h"
 #include "node.h"
+
+#include "mocapy.h"
 
 using namespace std;
 
 namespace pdbntk {
 
 Node::Node(uint ni, CondProbDist *cpd) : 
-    node_index_(ni), cpd_(cpd), fixed(false), is_constructed(false) {}
+    index_(ni), cpd_(cpd), fixed(false), is_constructed(false) {}
 
 Node::~Node() {} 
 
@@ -66,29 +46,28 @@ void Node::fix(bool flag) {
 	fixed = flag;
 }
 
-void Node::set_parentmap(ParentMap * pm) {
+void Node::set_parentmap(mocapy::ParentMap * pm) {
 	parentmap = *pm;
-	weight = parentmap.get_weight();
 	seq_len = parentmap.lng;
 }
 
 bool Node::operator< (const Node &n) const {
-  return node_index_ < n.node_index_;
+  return index_ < n.index_;
 }
 
 bool Node::operator> (const Node &n) const { 
-  return node_index_ > n.node_index_; 
+  return index_ > n.index_; 
 }
 
 bool Node::operator>= (const Node &n) const { 
-  return node_index_ >= n.node_index_; 
+  return index_ >= n.index_; 
 }
 
 bool Node::operator<= (const Node &n) const { 
-  return node_index_ <= n.node_index_; 
+  return index_ <= n.index_; 
 }
 
 bool Node::operator!= (const Node &n) const { 
-  return node_index_ > n.node_index_; 
+  return index_ > n.index_; 
 }
 }

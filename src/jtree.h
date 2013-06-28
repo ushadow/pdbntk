@@ -112,7 +112,7 @@ class JTree : public DAIAlgRG {
         virtual Real logZ() const;
         /** \pre Assumes that run() has been called and that \a props.inference == \c MAXPROD
          */
-        std::vector<std::size_t> findMaximum() const;
+        std::vector<Node*> findMaximum() const;
         virtual void init() {}
         virtual void init( const NodeSet &/*ns*/ ) {}
         virtual Real run();
@@ -151,7 +151,7 @@ class JTree : public DAIAlgRG {
         /// Returns constant reference to the message from outer region \a alpha to its \a _beta 'th neighboring inner region
         const Factor & message( size_t alpha, size_t _beta ) const { return _mes[alpha][_beta]; }
         /// Returns reference to the message from outer region \a alpha to its \a _beta 'th neighboring inner region
-        Factor & message( size_t alpha, size_t _beta ) { return _mes[alpha][_beta]; }
+        Factor & message(size_t alpha, size_t _beta) { return _mes[alpha][_beta]; }
 
         /// Runs junction tree algorithm using HUGIN (message-free) updates
         /** \note The initial messages may be arbitrary; actually they are not used at all.

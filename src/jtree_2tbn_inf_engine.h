@@ -18,6 +18,9 @@ public:
   JTree2TBNInfEngine(const FactorGraph &fg15, const FactorGraph &fg1);
   virtual double EnterEvidence(const mocapy::Sequence &evidence);
   virtual std::vector<mocapy::ESSBase*> GetResetESS() const;
+
+  /// Forward step
+  /// \param o observation at time t.
   void Fwd(const Evidence::Observation &o, int t);
 
 private:

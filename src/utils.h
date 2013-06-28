@@ -8,9 +8,10 @@
 
 namespace pdbntk {
 
-typedef float Real;
-
 class Node;
+
+typedef float Real;
+typedef dai::SmallSet<Node*> NodeSet;
 
 std::vector<Node*> MkSliceAndHalfBNet(const mocapy::DBN &dbn, 
     const std::vector<mocapy::NodeID> &interface);

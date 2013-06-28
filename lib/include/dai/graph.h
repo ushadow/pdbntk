@@ -97,7 +97,7 @@ typedef std::vector<Neighbor> Neighbors;
  *  \note If the edge is part of a bipartite graph, \a i is understood to correspond to a node of type 1, and
  *  \a j to a node of type 2.
  */
-typedef std::pair<size_t,size_t> Edge;
+typedef std::pair<size_t, size_t> Edge;
 
 
 /// Represents the neighborhood structure of nodes in an undirected graph.

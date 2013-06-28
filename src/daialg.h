@@ -7,7 +7,7 @@
 #include <dai/properties.h>
 
 #include "factor_graph.h"
-#include "regiongraph.h"
+#include "region_graph.h"
 #include "utils.h"
 
 #include <string>
@@ -114,7 +114,7 @@ class InfAlg {
         /** \note Before this method is called, run() should have been called.
          *  \throw NOT_IMPLEMENTED if not implemented/supported
          */
-        virtual std::vector<std::size_t> findMaximum() const { DAI_THROW(NOT_IMPLEMENTED); }
+        virtual std::vector<Node*> findMaximum() const { DAI_THROW(NOT_IMPLEMENTED); }
 
         /// Returns maximum difference between single variable beliefs in the last iteration.
         /** \throw NOT_IMPLEMENTED if not implemented/supported

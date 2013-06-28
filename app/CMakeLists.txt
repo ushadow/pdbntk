@@ -1,8 +1,8 @@
-#SET(BUILD_RELEASE ON)
-#SET(BUILD_DEBUG OFF)
-#SET(BUILD_PROFILE OFF)
-#SET(BUILD_DUMMYRANDOM OFF)
-SET(CMAKE_VERBOSE_MAKEFILE OFF) 
+SET(BUILD_RELEASE ON)
+SET(BUILD_DEBUG OFF)
+SET(BUILD_PROFILE OFF)
+
+SET(CMAKE_VERBOSE_MAKEFILE ON) 
 
 SET(Boost_USE_STATIC_LIBS ON)
 
@@ -10,10 +10,15 @@ FIND_PACKAGE(Boost COMPONENTS serialization program_options thread REQUIRED)
 FIND_PACKAGE(OpenMP REQUIRED)
 
 #FIND_LIBRARY(PTHREAD pthread)
-#
+
 # Make sure the compiler can find include files from pdbntk.
 include_directories (${pdbntk_SOURCE_DIR}/src)
-LINK_DIRECTORIES(${pdbntk_SOURCE_DIR}/lib)
+
+IF (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+  SET (PLATFORM "linux")
+ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+MESSAGE(STATUS "Platform: ${PLATFORM}")
+LINK_DIRECTORIES(${pdbntk_SOURCE_DIR}/lib/${PLATFORM})
 
 # find lapack
 FIND_LIBRARY(LAPACK_LIBRARY NAMES lapack )
@@ -40,18 +45,19 @@ endif (Fortran_COMPILER_NAME STREQUAL "gfortran")
 INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
 LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
 
-#IF(BUILD_RELEASE)
-SET(CMAKE_CXX_FLAGS "-O3 -fPIC -Wall -fmessage-length=0 -fopenmp")
 SET(MOCAPYLIB Mocapy)
-SET(PDBNTKLIB pdbntk)
 SET(DAILIB dai)
-#ENDIF(BUILD_RELEASE)
-#
-#IF(BUILD_DEBUG)
-#SET(CMAKE_CXX_FLAGS "-g -O0 -Wall -fmessage-length=0")
-#SET(MOCAPYLIB MocapyD CACHE STRING "Mocapy library used when linking executables")
-#ENDIF(BUILD_DEBUG)
-#
+
+IF(BUILD_RELEASE)
+SET(CMAKE_CXX_FLAGS "-O3 -fPIC -Wall -fmessage-length=0 -fopenmp")
+SET(PDBNTKLIB pdbntk)
+ENDIF(BUILD_RELEASE)
+
+IF(BUILD_DEBUG)
+SET(CMAKE_CXX_FLAGS "-g -O0 -Wall -fmessage-length=0 -fopenmp")
+SET(PDBNTKLIB pdbntk CACHE STRING "Mocapy library used when linking executables")
+ENDIF(BUILD_DEBUG)
+
 #IF(BUILD_PROFILE)
 #SET(CMAKE_CXX_FLAGS "-pg -O3 -Wall -fmessage-length=0")
 #SET(MOCAPYLIB MocapyP CACHE STRING "Mocapy library used when linking executables")

@@ -5,6 +5,7 @@
 #define PDBNTK_FACTOR_H_ 
 
 #include "node.h"
+#include "utils.h"
 
 #include <iostream>
 #include <functional>
@@ -15,12 +16,12 @@ namespace pdbntk {
 /// Represents a potential factor.
 /** Mathematically, a \e factor is a function mapping joint states of some
  *  variables to the nonnegative real numbers.
- *  More formally, denoting a discrete variable with label \f$l\f$ by
- *  \f$x_l\f$ and its state space by \f$X_l = \{0,1,\dots,S_l-1\}\f$,
+ *  More formally, denoting a variable with label \f$l\f$ by
+ *  \f$x_l\f$,
  *  a factor depending on the variables \f$\{x_l\}_{l\in L}\f$ is
  *  a function \f$f_L : \prod_{l\in L} X_l \to [0,\infty)\f$.
  *
- *  In libDAI, a factor is represented by a TFactor<T> object, which has two
+ *  In libDAI, a factor is represented by a Factor object, which has two
  *  components:
  *  \arg a VarSet, corresponding with the set of variables \f$\{x_l\}_{l\in L}\f$
  *  that the factor depends on;
@@ -37,9 +38,6 @@ namespace pdbntk {
  *  \todo Define a better fileformat for .fg files (maybe using XML)?
  *  \todo Add support for sparse factors.
  */
-
-typedef dai::SmallSet<Node*> NodeSet;
-
 class Factor {
   private:
     /// Stores the nodes on which the factor depends.
@@ -70,6 +68,15 @@ class Factor {
     /// Returns max-marginal on \a vars, obtained by maximizing all variables except those in \a vars, and normalizing the result if \a normed == \c true
     Factor maxMarginal(const NodeSet &nodes, bool normed=true) const;
     //@}
+
+    Factor normalized();
+    Real normalize();
+    Factor operator* (Real x) const;
+    Factor operator*= (Real x);
+    Factor operator* (const Factor& f) const;
+    Factor operator/ (const Factor& f) const;
+    Factor operator*= (const Factor& f) const;
+    Factor operator/= (const Factor& f) const;
 };
 
 /// Writes a factor to an output stream

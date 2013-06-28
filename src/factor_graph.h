@@ -135,7 +135,7 @@ class FactorGraph {
     /** \note Time complexity: O(nrVars())
      *  \throw OBJECT_NOT_FOUND if the variable is not part of this factor graph
      */
-    size_t findVar( const Node *n ) const {
+    size_t findNode( const Node *n ) const {
       size_t i = find( nodes().begin(), nodes().end(), n ) - nodes().begin();
       if( i == nrVars() )
         DAI_THROW(OBJECT_NOT_FOUND);
@@ -146,10 +146,10 @@ class FactorGraph {
     /** \note Time complexity: O( nrVars() * ns.size() )
      *  \throw OBJECT_NOT_FOUND if one of the variables is not part of this factor graph
      */
-    dai::SmallSet<size_t> findVars( const NodeSet& ns ) const {
+    dai::SmallSet<size_t> findNodes( const NodeSet& ns ) const {
       dai::SmallSet<size_t> result;
       for( NodeSet::const_iterator n = ns.begin(); n != ns.end(); n++ )
-        result.insert( findVar( *n ) );
+        result.insert( findNode( *n ) );
       return result;
     }
 

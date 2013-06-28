@@ -1,24 +1,3 @@
-/*
- * Node.h
- *
- *  Copyright (C) 2008, Martin Paluszewski, The Bioinformatics Centre, University of Copenhagen.
- *
- *  This file is part of Mocapy++.
- *
- *  Mocapy++ is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU Lesser General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  Mocapy++ is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public License
- *  along with Mocapy++.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 #ifndef PDBNTK_NODE_H_
 #define PDBNTK_NODE_H_
 
@@ -52,6 +31,7 @@ public:
 	void add_intra_parent(uint data_index, uint node_size);
 	void fix(bool flag);
 	std::string get_name() {return name;}
+  uint index() { return index_; }
 	void set_name(const char* new_name) {name = new_name;}
   virtual void set_parentmap(mocapy::ParentMap * pm);
 
@@ -73,7 +53,7 @@ public:
 
 protected:
   // Index of node in node list
-  uint node_index_;
+  uint index_;
 
   mocapy::ParentMap parentmap;
 
@@ -121,7 +101,7 @@ void Node::serialize(Archive & ar, const unsigned int version) {
   ar & parents_0_sizes;
   ar & parents_1_sizes;
   ar & is_constructed;
-  ar & node_index_;
+  ar & index_;
   ar & seq_len;
   ar & slice;
   ar & name;
