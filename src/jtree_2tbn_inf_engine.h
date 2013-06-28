@@ -1,9 +1,10 @@
 #ifndef JTREE_2TBN_INF_ENGINE_
 #define JTREE_2TBN_INF_ENGINE_
 
-#include <dai/factorgraph.h>
-#include <dai/jtree.h>
+#include "jtree.h"
 #include "abstract_inf_engine.h"
+#include "factor_graph.h"
+#include "evidence.h"
 
 #include <boost/scoped_ptr.hpp>
 #include <vector>
@@ -11,13 +12,16 @@
 namespace pdbntk {
 class JTree2TBNInfEngine : public AbstractInfEngine {
 public:
-  JTree2TBNInfEngine(const dai::FactorGraph &fg15, const dai::FactorGraph &fg1);
+  /// \param fg15 1.5 slice in the DBN. Slice 0.5 is the interface nodes
+  /// from slice 1. The interface nodes in slice 0.5 should be in a factor
+  /// (cluster) and the interface nodes in slice 2 should also be in a factor.
+  JTree2TBNInfEngine(const FactorGraph &fg15, const FactorGraph &fg1);
   virtual double EnterEvidence(const mocapy::Sequence &evidence);
   virtual std::vector<mocapy::ESSBase*> GetResetESS() const;
-  void Fwd();
+  void Fwd(const Evidence::Observation &o, int t);
 
 private:
-  boost::scoped_ptr<dai::JTree> jtree_engine_, jtree_engine1_;
+  boost::scoped_ptr<JTree> jtree_engine_, jtree_engine1_;
   
   void CollectEvidence();
 };

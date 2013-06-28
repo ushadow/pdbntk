@@ -24,15 +24,12 @@
 
 using namespace std;
 
-namespace mocapy {
+namespace pdbntk {
 
-Node::~Node() {
+Node::Node(uint ni, CondProbDist *cpd) : 
+    node_index_(ni), cpd_(cpd), fixed(false), is_constructed(false) {}
 
-}
-
-void Node::set_node_index(uint ni) {
-	node_index = ni;
-}
+Node::~Node() {} 
 
 void Node::set_data_index(uint di) {
 	data_index = di;
@@ -75,10 +72,23 @@ void Node::set_parentmap(ParentMap * pm) {
 	seq_len = parentmap.lng;
 }
 
-ostream& operator<<(ostream& output, const Node& a)  {
-	output << a.name << endl;
-	a.printNode(output);
-	return output;
+bool Node::operator< (const Node &n) const {
+  return node_index_ < n.node_index_;
 }
 
+bool Node::operator> (const Node &n) const { 
+  return node_index_ > n.node_index_; 
+}
+
+bool Node::operator>= (const Node &n) const { 
+  return node_index_ >= n.node_index_; 
+}
+
+bool Node::operator<= (const Node &n) const { 
+  return node_index_ <= n.node_index_; 
+}
+
+bool Node::operator!= (const Node &n) const { 
+  return node_index_ > n.node_index_; 
+}
 }

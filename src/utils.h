@@ -1,12 +1,14 @@
-#ifndef UTILS_H_
-#define UtILS_H_
+#ifndef PDBNTK_UTILS_H_
+#define PDBNTK_UTILS_H_
 
 #include "mocapy.h"
-
+#include <dai/smallset.h>
 #include <vector>
 #include <glog/logging.h>
 
 namespace pdbntk {
+
+typedef float Real;
 
 class Node;
 
@@ -14,4 +16,4 @@ std::vector<Node*> MkSliceAndHalfBNet(const mocapy::DBN &dbn,
     const std::vector<mocapy::NodeID> &interface);
 }
 
-#endif // UTILS_H_
+#endif // PDBNTK_UTILS_H_

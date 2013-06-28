@@ -6,12 +6,13 @@
 
 namespace pdbntk {
 
-JTree2TBNInfEngine::JTree2TBNInfEngine(const dai::FactorGraph &fg15,
-    const dai::FactorGraph &fg1) {
+JTree2TBNInfEngine::JTree2TBNInfEngine(const FactorGraph &fg15,
+    const FactorGraph &fg1) {
   dai::PropertySet infprops;
   infprops.set("updates", std::string("HUGIN"));
-  jtree_engine_.reset(new dai::JTree(fg15, infprops)); 
-  jtree_engine1_.reset(new dai::JTree(fg1, infprops)); 
+  // Creates a jtree engine for 1.5 slice.
+  jtree_engine_.reset(new JTree(fg15, infprops)); 
+  jtree_engine1_.reset(new JTree(fg1, infprops)); 
 }
 
 double JTree2TBNInfEngine::EnterEvidence(const mocapy::Sequence &evidence) {
@@ -20,6 +21,11 @@ double JTree2TBNInfEngine::EnterEvidence(const mocapy::Sequence &evidence) {
 
 std::vector<mocapy::ESSBase*> JTree2TBNInfEngine::GetResetESS() const {
   return std::vector<mocapy::ESSBase*>();
+}
+
+void JTree2TBNInfEngine::Fwd(const Evidence::Observation &o, int t) {
+  for (Evidence::Observation::const_iterator i = o.begin(); i != o.end(); i++)
+    jtree_engine_->clamp(jtree_engine_->fg().findVar(i->first), i->second);
 }
 
 
