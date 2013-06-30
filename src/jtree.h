@@ -8,9 +8,10 @@
 #include <dai/bp.h>
 #include <dai/cbp.h>
 #include <dai/util.h>
-#include <dai/clustergraph.h>
 
 #include "daialg.h"
+#include "cluster_graph.h"
+
 #include <vector>
 #include <string>
 
@@ -189,7 +190,7 @@ class JTree : public DAIAlgRG {
  *  \throws OUT_OF_MEMORY if the total number of states becomes larger than maxStates
  *  \return a pair (number of variables in largest clique, number of states in largest clique)
  */
-std::pair<size_t, dai::BigInt> boundTreewidth( const FactorGraph &fg, dai::greedyVariableElimination::eliminationCostFunction fn, size_t maxStates=0 );
+std::pair<size_t, dai::BigInt> boundTreewidth( const FactorGraph &fg, greedyVariableElimination::eliminationCostFunction fn, size_t maxStates=0 );
 
 }
 #endif // PDBNTK_JTREE_H_

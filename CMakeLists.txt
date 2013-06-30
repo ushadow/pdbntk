@@ -3,17 +3,24 @@ set(CMAKE_LEGACY_CYGWIN_WIN32 0)
 project(pdbntk C CXX Fortran)
 
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/lib/include /usr/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/lib/include
+    /usr/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/gteset-1.6.0)
 
 SET(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 
+SET(MOCAPYLIB Mocapy)
+SET(DAILIB dai)
+SET(GTESLIB gteset)
+
 # Recurse into the "src" and "examples" subdirectories. This does not actually
 # cause another cmake executable to run. The same process will walk through
 # the project's entire directory structure.
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/app)
-#add_subdirectory (tests)
+add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/gtest-1.6.0)
+add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/src)
+add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/app)
+add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/test)
 
 # settings for making distribution package
 #set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Mocapy is a Dynamic Bayesian Network toolkit")
