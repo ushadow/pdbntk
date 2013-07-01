@@ -16,22 +16,26 @@ namespace pdbntk {
 
 void JTree::setProperties( const dai::PropertySet &opts ) {
   using dai::PropertySet;
-  DAI_ASSERT( opts.hasKey("updates") );
 
-  props.updates = opts.getStringAs<Properties::UpdateType>("updates");
-  if( opts.hasKey("verbose") )
+  // Default update type is HUGIN.
+  if (opts.hasKey("updates"))
+    props.updates = opts.getStringAs<Properties::UpdateType>("updates");
+  else
+    props.updates = Properties::UpdateType::HUGIN;
+      
+  if (opts.hasKey("verbose"))
     props.verbose = opts.getStringAs<size_t>("verbose");
   else
     props.verbose = 0;
-  if( opts.hasKey("inference") )
+  if (opts.hasKey("inference"))
     props.inference = opts.getStringAs<Properties::InfType>("inference");
   else
     props.inference = Properties::InfType::SUMPROD;
-  if( opts.hasKey("heuristic") )
+  if (opts.hasKey("heuristic"))
     props.heuristic = opts.getStringAs<Properties::HeuristicType>("heuristic");
   else
     props.heuristic = Properties::HeuristicType::MINFILL;
-  if( opts.hasKey("maxmem") )
+  if (opts.hasKey("maxmem"))
     props.maxmem = opts.getStringAs<size_t>("maxmem");
   else
     props.maxmem = 0;
@@ -96,7 +100,8 @@ JTree::JTree( const FactorGraph &fg, const dai::PropertySet &opts, bool automati
 }
 
 
-void JTree::construct( const FactorGraph &fg, const std::vector<NodeSet> &cl, bool verify ) {
+void JTree::construct(const FactorGraph &fg, const std::vector<NodeSet> &cl,
+                      bool verify) {
   using std::vector;
   using dai::UEdge;
   using dai::Edge;
@@ -172,7 +177,7 @@ void JTree::construct( const FactorGraph &fg, const std::vector<NodeSet> &cl, bo
 
   // Create beliefs
   Qa.clear();
-  Qa.reserve( nrORs() );
+  Qa.reserve(nrORs());
   for( size_t alpha = 0; alpha < nrORs(); alpha++ )
     Qa.push_back( OR(alpha) );
 
@@ -501,7 +506,7 @@ std::pair<size_t, dai::BigInt> boundTreewidth( const FactorGraph &fg, greedyVari
   using dai::BigInt;
 
   // Create cluster graph from factor graph
-  ClusterGraph _cg( fg, true );
+  ClusterGraph _cg(fg, true);
 
   // Obtain elimination sequence
   std::vector<NodeSet> ElimVec = _cg.VarElim(greedyVariableElimination(fn), maxStates ).eraseNonMaximal().clusters();

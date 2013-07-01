@@ -1,6 +1,11 @@
 #ifndef PDBNTK_CLUSTER_GRAPH_H_ 
 #define PDBNTK_CLUSTER_GRAPH_H_ 
 
+#include "dai/bipgraph.h"
+#include "node.h"
+#include "utils.h"
+#include "factor_graph.h"
+
 #include <set>
 #include <vector>
 
@@ -35,7 +40,7 @@ namespace pdbntk {
       /** Creates cluster graph which has factors in \a fg as clusters if \a onlyMaximal == \c false,
        *  and only the maximal factors in \a fg if \a onlyMaximal == \c true.
        */
-      ClusterGraph( const FactorGraph& fg, bool onlyMaximal );
+      ClusterGraph(const FactorGraph& fg, bool onlyMaximal);
       //@}
 
       /// \name Queries

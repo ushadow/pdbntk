@@ -43,6 +43,8 @@ class Factor {
   private:
     /// Stores the nodes on which the factor depends.
     NodeSet ns_;
+    /// Number of states of this potential factor.
+    size_t states_;
 
   public:
     Factor() : ns_() {}
@@ -58,12 +60,14 @@ class Factor {
     /// Returns reference to variable set (i.e., the variables on which the factor depends)
     NodeSet& nodes() { return ns_; }
 
+    size_t states() { return states_; }
+
     /// Comparison
     bool operator==( const Factor& y ) const {
       return (ns_ == y.ns_);
     }
 
-    /// Returns marginal on \a vars, obtained by summing out all variables except those in \a vars, and normalizing the result if \a normed == \c true
+    /// Returns marginal on \a nodes, obtained by summing out all variables except those in \a nodes, and normalizing the result if \a normed == \c true
     Factor marginal(const NodeSet &nodes, bool normed=true) const;
 
     /// Returns max-marginal on \a vars, obtained by maximizing all variables except those in \a vars, and normalizing the result if \a normed == \c true
@@ -79,6 +83,8 @@ class Factor {
     Factor operator*= (const Factor& f) const;
     Factor operator/= (const Factor& f) const;
 };
+
+std::ostream& operator<< (std::ostream& os, const Factor& f);
 
 } 
 

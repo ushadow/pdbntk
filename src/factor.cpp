@@ -57,4 +57,25 @@ Factor Factor::operator*=(const Factor &f) const {
 Factor Factor::operator*(const Factor &f) const {
   return Factor();
 }
+
+Factor Factor::operator/(const Factor &f) const {
+  return Factor();
+}
+
+Factor Factor::marginal(const NodeSet &nodes, bool normed) const {
+  return Factor();
+}
+
+Factor Factor::maxMarginal(const NodeSet &nodes, bool normed) const {
+  return Factor();
+} 
+
+Factor Factor::normalized() {
+  return Factor();
+}
+
+Real Factor::normalize() {
+  return 0.0;
+}
+
 } // end of namespace dai

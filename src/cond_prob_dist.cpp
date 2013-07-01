@@ -2,7 +2,7 @@
 
 namespace pdbntk {
 void CondProbDist::setRandomGen(mocapy::RandomGen* rg) {
-  densities_->setRandomGen(rg);
+  density_->setRandomGen(rg);
 }
 
 void CondProbDist::update_ess(std::vector<double> & ptv) {
@@ -19,17 +19,17 @@ std::vector<mocapy::MDArray<double> > CondProbDist::get_ess() {
 
 void CondProbDist::do_M_step(std::vector<mocapy::MDArray<double> > & new_ess) {
   // Update the parameters
-  densities_->estimate(new_ess);
+  density_->estimate(new_ess);
   // Get ready for new cycle
   ess_->clear();
 }
 
 uint CondProbDist::get_output_size() {
-  return densities_->get_output_size();
+  return density_->get_output_size();
 }
 
 std::vector<mocapy::MDArray<double> > CondProbDist::get_parameters() {
-  return densities_->get_parameters();
+  return density_->get_parameters();
 }
 
 }

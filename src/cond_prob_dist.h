@@ -15,7 +15,14 @@ enum eCPDType {
 /// parts: the density function and the estimated sufficient statistics.
 class CondProbDist {
 public:
-	CondProbDist(eCPDType type) : cpd_type_(type) {};
+	CondProbDist(eCPDType type, mocapy::ESSBase *ess, mocapy::DensitiesBase *density) 
+      : cpd_type_(type), ess_(ess), density_(density) {};
+
+/// Accessors
+//@{
+  uint node_size() const { return density_->get_node_size(); }
+  mocapy::DensitiesBase* get_densities() { return density_.get(); }
+//@}
 
 	// Return a sample of the i'th slice
 	void sample(uint i);
@@ -30,8 +37,7 @@ public:
 
 	void do_M_step(std::vector<mocapy::MDArray<double> > & ess);
 
-	void set_densities(mocapy::DensitiesBase *d) { densities_.reset(d); }
-  mocapy::DensitiesBase* get_densities() { return densities_.get(); }
+	void set_densities(mocapy::DensitiesBase *d) { density_.reset(d); }
 	std::vector<mocapy::MDArray<double> > get_parameters();
 
 	void setRandomGen(mocapy::RandomGen* rg);
@@ -45,7 +51,7 @@ public:
 private:
   eCPDType cpd_type_;
   boost::scoped_ptr<mocapy::ESSBase> ess_;
-  boost::scoped_ptr<mocapy::DensitiesBase> densities_;
+  boost::scoped_ptr<mocapy::DensitiesBase> density_;
   double weight_;
 };
 

@@ -29,7 +29,11 @@ IF(NOT BOOST_serialization_FOUND )
                 FIND_PACKAGE(Boost COMPONENTS serialization 1.36.0)
 ENDIF(NOT BOOST_serialization_FOUND)
 
-# Make sure the compiler can find include files from mocapy.
+FIND_PACKAGE(GMPXX REQUIRED)
+LINK_DIRECTORIES(${GMPXX_LIBRARY_DIR})
+INCLUDE_DIRECTORIES(${GMP_LIBRARY_DIR})
+
+# Make sure the compiler can find include files from pdbnk.
 include_directories (${pdbntk_SOURCE_DIR}/src)
 
 # find lapack
@@ -90,5 +94,6 @@ FOREACH(p ${PROGS})
         add_executable(${p} ${p}.cpp)
         target_link_libraries (${p} ${PDBNTKLIB} ${MOCAPYLIB} ${DAILIB} ${GLOG}
             ${GTESLIB} ${GTESTMAINLIB} ${Boost_SERIALIZATION_LIBRARY}
+            ${GMPXX_LIBRARIES} ${GMP_LIBRARIES}
             ${LAPACK_LIBRARY} ${CMAKE_FLIB})
 ENDFOREACH(p)

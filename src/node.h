@@ -25,6 +25,11 @@ public:
 	void set_node_index(uint ni);
 	void set_data_index(uint di);
 
+/// Accessors
+//@{
+  uint size() const { return cpd_->node_size(); }
+//@}
+
 	void add_intra_child(Node* n);
 	void add_inter_child(Node* n);
 	void add_inter_parent(uint data_index, uint node_size);
