@@ -4,7 +4,6 @@
 #include "mocapy.h"
 #include <dai/smallset.h>
 #include <vector>
-#include <glog/logging.h>
 
 namespace pdbntk {
 

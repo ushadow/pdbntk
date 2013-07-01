@@ -2,17 +2,22 @@ cmake_minimum_required(VERSION 2.8)
 set(CMAKE_LEGACY_CYGWIN_WIN32 0)
 project(pdbntk C CXX Fortran)
 
+SET(CMAKE_VERBOSE_MAKEFILE ON) 
+
+SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/lib/include
-    /usr/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/gteset-1.6.0)
+    ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/gtest-1.6.0/include)
 
 SET(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 
 SET(MOCAPYLIB Mocapy)
 SET(DAILIB dai)
-SET(GTESLIB gteset)
+SET(GTESLIB gtest)
+SET(GTESTMAINLIB gtest_main)
+SET(GLOG glog)
 
 # Recurse into the "src" and "examples" subdirectories. This does not actually
 # cause another cmake executable to run. The same process will walk through

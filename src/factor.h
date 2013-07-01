@@ -10,6 +10,7 @@
 #include <iostream>
 #include <functional>
 #include <cmath>
+#include <memory>
 
 namespace pdbntk {
 
@@ -46,10 +47,10 @@ class Factor {
   public:
     Factor() : ns_() {}
     /// Constructs factor depending on the node \a n. 
-    Factor(Node *n) : ns_(n) {}
+    Factor(Node* n) : ns_(n) {}
 
     /// Constructs factor depending on variables in \a vars with uniform distribution
-    Factor( const NodeSet& nodes) : ns_(nodes) {}
+    Factor(const NodeSet& nodes) : ns_(nodes) {}
 
     /// Returns constant reference to variable set (i.e., the variables on which the factor depends)
     const NodeSet& nodes() const { return ns_; }
@@ -72,20 +73,12 @@ class Factor {
     Factor normalized();
     Real normalize();
     Factor operator* (Real x) const;
-    Factor operator*= (Real x);
+    Factor operator*= (Real x) const;
     Factor operator* (const Factor& f) const;
     Factor operator/ (const Factor& f) const;
     Factor operator*= (const Factor& f) const;
     Factor operator/= (const Factor& f) const;
 };
-
-/// Writes a factor to an output stream
-/** \relates TFactor
-*/
-std::ostream& operator<< (std::ostream& os, const Factor& f) {
-  os << "(" << f.nodes() << ")";
-  return os;
-}
 
 } 
 

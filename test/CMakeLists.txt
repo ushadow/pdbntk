@@ -57,13 +57,19 @@ endif (Fortran_COMPILER_NAME STREQUAL "gfortran")
 INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
 LINK_DIRECTORIES(${Boost_LIBRARY_DIRS} ${LIBRARY_OUTPUT_PATH})
 
+IF (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+  SET (PLATFORM "linux")
+ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+MESSAGE(STATUS "Platform: ${PLATFORM}")
+LINK_DIRECTORIES(${pdbntk_SOURCE_DIR}/lib/${PLATFORM})
+
 IF(BUILD_RELEASE)
-SET(CMAKE_CXX_FLAGS "-O3 -Wall -fmessage-length=0")
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -Wall -fmessage-length=0")
 SET(PDBNTKLIB pdbntk)
 ENDIF(BUILD_RELEASE)
 
 IF(BUILD_DEBUG)
-SET(CMAKE_CXX_FLAGS "-g -O0 -Wall -fmessage-length=0")
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -Wall -fmessage-length=0")
 SET(PDBNTKLIB pdbntkD)
 ENDIF(BUILD_DEBUG)
 
@@ -81,6 +87,7 @@ SET(PROGS jtree_test)
 
 FOREACH(p ${PROGS})
         add_executable(${p} ${p}.cpp)
-        target_link_libraries (${p} ${PDBNTKLIB} ${MOCAPYLIB} ${DAILIB}
-          ${GTESLIB} ${Boost_SERIALIZATION_LIBRARY} ${LAPACK_LIBRARY} ${CMAKE_FLIB})
+        target_link_libraries (${p} ${PDBNTKLIB} ${MOCAPYLIB} ${DAILIB} ${GLOG}
+            ${GTESLIB} ${GTESTMAINLIB} ${Boost_SERIALIZATION_LIBRARY}
+            ${LAPACK_LIBRARY} ${CMAKE_FLIB})
 ENDFOREACH(p)
