@@ -3,10 +3,10 @@
 
 #include "jtree.h"
 #include "abstract_inf_engine.h"
-#include "factor_graph.h"
+#include "graph/factor_graph.h"
 #include "evidence.h"
 
-#include <boost/scoped_ptr.hpp>
+#include <memory> 
 #include <vector>
 
 namespace pdbntk {
@@ -24,7 +24,7 @@ public:
   void Fwd(const Evidence::Observation &o, int t);
 
 private:
-  boost::scoped_ptr<JTree> jtree_engine_, jtree_engine1_;
+  std::unique_ptr<JTree> jtree_engine_, jtree_engine1_;
   
   void CollectEvidence();
 };

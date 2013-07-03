@@ -35,7 +35,7 @@ void RegionGraph::construct( const FactorGraph &fg, const std::vector<NodeSet> &
             }
         DAI_ASSERT( alpha != nrORs() );
     }
-    recomputeORs();
+    RecomputeORs();
 
     // Create bipartite graph
     _G.construct( nrORs(), nrIRs(), edges.begin(), edges.end() );
@@ -164,11 +164,15 @@ bool RegionGraph::checkCountingNumbers() const {
 }
 
 
-void RegionGraph::recomputeORs() {
+void RegionGraph::RecomputeORs() {
+  for (size_t alpha = 0; alpha < nrORs(); alpha++)
+    OR(alpha).InitPot();
+  for (size_t i = 0; i < nrFactors(); i++)
+    if (fac2OR(i) != -1U)
+      OR(fac2OR(i) *= factor(i);
 }
 
-
-void RegionGraph::recomputeORs( const NodeSet &ns ) {
+void RegionGraph::RecomputeORs(const NodeSet &ns) {
 }
 
 

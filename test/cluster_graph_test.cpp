@@ -1,4 +1,4 @@
-#include "cluster_graph.h"
+#include "graph/cluster_graph.h"
 #include "cpd/cpd_factory.h"
 #include "gtest/gtest.h"
 #include "glog/logging.h"

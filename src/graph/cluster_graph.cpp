@@ -1,6 +1,6 @@
 #include "cluster_graph.h"
 
-#include "utils.h"
+#include "../utils.h"
 #include "factor_graph.h"
 #include "dai/smallset.h"
 

@@ -34,7 +34,7 @@ LINK_DIRECTORIES(${GMPXX_LIBRARY_DIR})
 INCLUDE_DIRECTORIES(${GMP_LIBRARY_DIR})
 
 # Make sure the compiler can find include files from pdbnk.
-include_directories (${pdbntk_SOURCE_DIR}/src)
+INCLUDE_DIRECTORIES(${PDBNTK_SOURCE_DIR}/src)
 
 # find lapack
 FIND_LIBRARY(LAPACK_LIBRARY NAMES lapack )
@@ -43,7 +43,7 @@ message("error: could not find lapack library")
 ENDIF(NOT LAPACK_LIBRARY)
 
 # FFLAGS depend on the compiler
-get_filename_component (Fortran_COMPILER_NAME ${CMAKE_Fortran_COMPILER} NAME)
+GET_FILENAME_COMPONENT(Fortran_COMPILER_NAME ${CMAKE_Fortran_COMPILER} NAME)
 
 if (Fortran_COMPILER_NAME STREQUAL "gfortran")
   # gfortran
@@ -65,7 +65,7 @@ IF (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   SET (PLATFORM "linux")
 ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 MESSAGE(STATUS "Platform: ${PLATFORM}")
-LINK_DIRECTORIES(${pdbntk_SOURCE_DIR}/lib/${PLATFORM})
+LINK_DIRECTORIES(${PDBNTK_SOURCE_DIR}/lib/${PLATFORM})
 LINK_DIRECTORIES(/usr/local/lib)
 
 IF(BUILD_RELEASE)

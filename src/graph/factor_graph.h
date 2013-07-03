@@ -6,7 +6,7 @@
 
 #include <dai/bipgraph.h>
 #include "factor.h"
-#include "utils.h"
+#include "../utils.h"
 
 #include <iostream>
 #include <map>

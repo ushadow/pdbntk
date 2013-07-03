@@ -70,12 +70,14 @@ Factor Factor::maxMarginal(const NodeSet &nodes, bool normed) const {
   return Factor();
 } 
 
-Factor Factor::normalized() {
+Factor Factor::normalized() const {
   return Factor();
 }
 
 Real Factor::normalize() {
   return 0.0;
 }
+
+void Factor::InitPot() {}
 
 } // end of namespace dai

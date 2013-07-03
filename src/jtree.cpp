@@ -2,11 +2,11 @@
 #include <dai/weightedgraph.h>
 
 #include "jtree.h"
-#include "cluster_graph.h"
-#include "node.h"
+#include "graph/cluster_graph.h"
+#include "graph/node.h"
 #include "utils.h"
-#include "factor.h"
-#include "factor_graph.h"
+#include "graph/factor.h"
+#include "graph/factor_graph.h"
 
 #include <iostream>
 #include <stack>
@@ -108,20 +108,20 @@ void JTree::construct(const FactorGraph &fg, const std::vector<NodeSet> &cl,
   using dai::Edge;
 
   // Copy the factor graph
-  FactorGraph::operator=( fg );
+  FactorGraph::operator=(fg);
 
   // Construct a weighted graph (each edge is weighted with the cardinality
   // of the intersection of the nodes, where the nodes are the elements of cl).
   dai::WeightedGraph<int> JuncGraph;
   // Start by connecting all clusters with cluster zero, and weight zero,
   // in order to get a connected weighted graph
-  for( size_t i = 1; i < cl.size(); i++ )
-    JuncGraph[UEdge(i,0)] = 0;
-  for( size_t i = 0; i < cl.size(); i++ ) {
-    for( size_t j = i + 1; j < cl.size(); j++ ) {
+  for (size_t i = 1; i < cl.size(); i++)
+    JuncGraph[UEdge(i, 0)] = 0;
+  for (size_t i = 0; i < cl.size(); i++) {
+    for (size_t j = i + 1; j < cl.size(); j++) {
       size_t w = (cl[i] & cl[j]).size();
-      if( w )
-        JuncGraph[UEdge(i,j)] = w;
+      if (w)
+        JuncGraph[UEdge(i, j)] = w;
     }
   }
   DLOG(INFO) << "Weightedgraph: " << JuncGraph;
@@ -142,34 +142,35 @@ void JTree::construct(const FactorGraph &fg, const std::vector<NodeSet> &cl,
   // For each factor, find an outer region that subsumes that factor.
   // Then, multiply the outer region with that factor.
   _fac2OR.clear();
-  _fac2OR.resize( nrFactors(), -1U );
-  for( size_t I = 0; I < nrFactors(); I++ ) {
+  _fac2OR.resize(nrFactors(), -1U);
+  for (size_t I = 0; I < nrFactors(); I++) {
     size_t alpha;
-    for( alpha = 0; alpha < nrORs(); alpha++ )
-      if( OR(alpha).nodes() >> factor(I).nodes() ) {
+    for (alpha = 0; alpha < nrORs(); alpha++)
+      if (OR(alpha).nodes() >> factor(I).nodes()) {
         _fac2OR[I] = alpha;
         break;
       }
     if( verify )
-      DAI_ASSERT( alpha != nrORs() );
+      DAI_ASSERT(alpha != nrORs());
   }
-  recomputeORs();
+  RecomputeORs();
 
   // Create inner regions and edges
+  // Inner regions are analogous to separators.
   _IRs.clear();
-  _IRs.reserve( RTree.size() );
+  _IRs.reserve(RTree.size());
   vector<Edge> edges;
-  edges.reserve( 2 * RTree.size() );
+  edges.reserve(2 * RTree.size());
   for( size_t i = 0; i < RTree.size(); i++ ) {
-    edges.push_back( Edge( RTree[i].first, nrIRs() ) );
-    edges.push_back( Edge( RTree[i].second, nrIRs() ) );
+    edges.push_back(Edge(RTree[i].first, nrIRs()));
+    edges.push_back(Edge(RTree[i].second, nrIRs()));
     // inner clusters have counting number -1, except if they are empty
     NodeSet intersection = cl[RTree[i].first] & cl[RTree[i].second];
-    _IRs.push_back( Region( intersection, intersection.size() ? -1.0 : 0.0 ) );
+    _IRs.push_back(Region(intersection, intersection.size() ? -1.0 : 0.0));
   }
 
   // create bipartite graph
-  _G.construct( nrORs(), nrIRs(), edges.begin(), edges.end() );
+  _G.construct(nrORs(), nrIRs(), edges.begin(), edges.end());
 
   // Check counting numbers
 #ifdef DAI_DEBUG
@@ -179,18 +180,18 @@ void JTree::construct(const FactorGraph &fg, const std::vector<NodeSet> &cl,
   // Create beliefs
   Qa.clear();
   Qa.reserve(nrORs());
-  for( size_t alpha = 0; alpha < nrORs(); alpha++ )
-    Qa.push_back( OR(alpha) );
+  for (size_t alpha = 0; alpha < nrORs(); alpha++)
+    Qa.push_back(OR(alpha));
 
   Qb.clear();
-  Qb.reserve( nrIRs() );
-  for( size_t beta = 0; beta < nrIRs(); beta++ )
+  Qb.reserve(nrIRs());
+  for (size_t beta = 0; beta < nrIRs(); beta++)
     Qb.push_back(Factor(IR(beta)));
 }
 
 
-void JTree::GenerateJT( const FactorGraph &fg, const std::vector<NodeSet> &cl ) {
-  construct( fg, cl, true );
+void JTree::GenerateJT(const FactorGraph &fg, const std::vector<NodeSet> &cl) {
+  construct(fg, cl, true);
 
   // Create messages
   _mes.clear();

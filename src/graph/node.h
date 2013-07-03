@@ -1,7 +1,7 @@
 #ifndef PDBNTK_NODE_H_
 #define PDBNTK_NODE_H_
 
-#include "cpd/cond_prob_dist.h"
+#include "../cpd/cond_prob_dist.h"
 #include "framework/parentmap.h"
 
 #include <string>

@@ -6,8 +6,8 @@
 
 #include <dai/properties.h>
 
-#include "factor_graph.h"
-#include "region_graph.h"
+#include "graph/factor_graph.h"
+#include "graph/region_graph.h"
 #include "utils.h"
 
 #include <string>

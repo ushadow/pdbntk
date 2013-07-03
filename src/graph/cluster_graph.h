@@ -3,7 +3,7 @@
 
 #include "dai/bipgraph.h"
 #include "node.h"
-#include "utils.h"
+#include "../utils.h"
 #include "factor_graph.h"
 
 #include <set>

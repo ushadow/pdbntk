@@ -10,7 +10,7 @@
 #include <dai/util.h>
 
 #include "daialg.h"
-#include "cluster_graph.h"
+#include "graph/cluster_graph.h"
 
 #include <vector>
 #include <string>

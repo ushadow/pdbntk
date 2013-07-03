@@ -14,7 +14,7 @@
 #define PDBNTK_EVIDENCE_H_
 
 #include "utils.h"
-#include "factor_graph.h" 
+#include "graph/factor_graph.h" 
 #include <istream>
 #include <vector>
 #include <map>

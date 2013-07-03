@@ -14,7 +14,7 @@
 #define PDBNTK_REGIONGRAPH_H_ 
 
 #include "factor_graph.h"
-#include "utils.h"
+#include "../utils.h"
 
 #include <iostream>
 
@@ -218,7 +218,7 @@ class RegionGraph : public FactorGraph {
       NodeSet ns;
       for( std::map<size_t, Factor>::const_iterator fac = facs.begin(); fac != facs.end(); fac++ )
         ns |= fac->second.nodes();
-      recomputeORs( ns );
+      RecomputeORs( ns );
     }
     //@}
 
@@ -259,12 +259,12 @@ class RegionGraph : public FactorGraph {
     /// Recompute all outer regions
     /** The factor contents of each outer region is set to the product of the factors belonging to that region.
     */
-    void recomputeORs();
+    void RecomputeORs();
 
     /// Recompute all outer regions involving the variables in \a vs
     /** The factor contents of each outer region involving at least one of the variables in \a vs is set to the product of the factors belonging to that region.
     */
-    void recomputeORs( const NodeSet& vs );
+    void RecomputeORs( const NodeSet& vs );
 
     /// Recompute all outer regions involving factor \a I
     /** The factor contents of each outer region involving the \a I 'th factor is set to the product of the factors belonging to that region.

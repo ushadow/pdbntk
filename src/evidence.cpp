@@ -1,5 +1,5 @@
 #include "evidence.h"
-#include "node.h"
+#include "graph/node.h"
 
 #include <sstream>
 #include <string>
