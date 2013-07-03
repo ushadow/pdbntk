@@ -1,6 +1,6 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 SET(CMAKE_LEGACY_CYGWIN_WIN32 0)
-PROJECT(pdbntk C CXX Fortran)
+PROJECT(PDBNTK C CXX Fortran)
 
 SET(CMAKE_VERBOSE_MAKEFILE ON) 
 
@@ -19,7 +19,7 @@ SET(GTESLIB gtest)
 SET(GTESTMAINLIB gtest_main)
 SET(GLOG glog)
 
-# Recurse into the "src" and "examples" subdirectories. This does not actually
+# Recurse into the subdirectories. This does not actually
 # cause another cmake executable to run. The same process will walk through
 # the project's entire directory structure.
 ADD_SUBDIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/gtest-1.6.0)

@@ -1,4 +1,4 @@
-#SET(BUILD_RELEASE ON)
+SET(BUILD_RELEASE ON)
 #SET(BUILD_DEBUG OFF)
 #SET(BUILD_PROFILE OFF)
 #SET(BUILD_DUMMYRANDOM OFF)
@@ -17,27 +17,15 @@ FIND_PACKAGE(GMPXX REQUIRED)
 INCLUDE_DIRECTORIES(${GMPXX_INCLUDE_DIR})
 INCLUDE_DIRECTORIES(${GMP_INCLUDE_DIR})
 
-FILE(GLOB_RECURSE src RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.cpp *.h)
-SET(pdbntk_src ${src})
+FILE(GLOB_RECURSE SRC RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.cpp *.h)
+SET(PDBNTK_SRC ${SRC})
 
-## build release library
-#IF(BUILD_RELEASE)
-ADD_LIBRARY(pdbntk STATIC ${pdbntk_src}) 
-
+# Build release library
+IF(BUILD_RELEASE)
+ADD_LIBRARY(pdbntk STATIC ${PDBNTK_SRC}) 
 SET_TARGET_PROPERTIES(pdbntk PROPERTIES COMPILE_FLAGS "-O3 -fPIC -c -fmessage-length=0 -fopenmp")
-##ENDIF(BUILD_RELEASE)
-#
-##IF(BUILD_RELEASE)
-##add_library (Mocapy SHARED
-##        ${Mocapy_src}
-##        ${Integrate_src}
-##        ${Functions_src}
-##        )
-#
-##SET_TARGET_PROPERTIES(Mocapy PROPERTIES COMPILE_FLAGS " -O3 -fPIC -c -fmessage-length=0 -I${MOCAPY_SOURCE_DIR}/src")
-##ENDIF(BUILD_RELEASE)
-#
-#
+ENDIF(BUILD_RELEASE)
+
 #IF(BUILD_DEBUG)
 #add_library (MocapyD 
 #        ${Mocapy_src}
