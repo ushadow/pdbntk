@@ -19,14 +19,16 @@ enum eSliceType {
 /// A node in the Bayesian network.
 class Node {
 public:
-	Node(uint node_index, CondProbDist *cpd); 
+  /// \param cpd cannot be NULL, and this node does not take the ownership of
+  //  the pointer.
+	Node(uint node_index, CondProbDist *cpd, bool observed = false); 
 	virtual ~Node();
 	void set_node_index(uint ni);
 	void set_data_index(uint di);
 
 /// Accessors
 //@{
-  uint size() const { return cpd_->node_size(); }
+  uint size() const; 
   uint index() const { return index_; }
 //@}
 
@@ -34,7 +36,6 @@ public:
 	void add_inter_child(Node* n);
 	void add_inter_parent(uint data_index, uint node_size);
 	void add_intra_parent(uint data_index, uint node_size);
-	void fix(bool flag);
 	std::string get_name() {return name;}
 	void set_name(const char* new_name) {name = new_name;}
   virtual void set_parentmap(mocapy::ParentMap * pm);
@@ -53,11 +54,15 @@ public:
 
   // Index of node data in slice
   int data_index;
-  bool fixed;
 
 protected:
-  // Index of node in node list
+  /// Index of node in node list
   uint index_;
+
+  bool observed_;
+
+  /// Conditional probability distribution associated with this node.
+  CondProbDist *cpd_;
 
   mocapy::ParentMap parentmap;
 
@@ -84,15 +89,11 @@ protected:
   eSliceType slice;
 
   std::string name;
-
-  /// Conditional probability distribution associated with this node.
-  CondProbDist *cpd_;
 };
 
 template<class Archive>
 void Node::serialize(Archive & ar, const unsigned int version) {
   ar & data_index;
-  ar & fixed;
 
   if (version == 0) {
     ar & parentmap;

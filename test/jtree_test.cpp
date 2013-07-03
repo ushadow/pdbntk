@@ -6,7 +6,6 @@
 #include <memory>
 #include <vector>
 #include <ostream>
-#include <memory>
 
 TEST(JTreeTest, MaximalCliques) {
   using pdbntk::Node;
@@ -27,14 +26,14 @@ TEST(JTreeTest, MaximalCliques) {
   unique_ptr<CondProbDist> cpd5(CPDFactory::NewDiscreteCPD(13));
   unique_ptr<CondProbDist> cpd6(CPDFactory::NewDiscreteCPD(44));
 
-  Node n1(1, cpd1.get());
+  Node n1(1, cpd1.get(), true);
   Node n2(2, cpd2.get());
-  Node n3(3, cpd3.get());
-  Node n4(4, cpd4.get());
-  Node n5(5, cpd5.get());
+  Node n3(3, cpd3.get(), true);
+  Node n4(4, cpd4.get(), true);
+  Node n5(5, cpd5.get(), true);
   Node n6(6, cpd6.get());
-  Node n7(7, cpd3.get());
-  Node n8(8, cpd4.get());
+  Node n7(7, cpd3.get(), true);
+  Node n8(8, cpd4.get(), true);
 
   NodeSet ns1(&n1, &n2);
   factors.push_back(Factor(ns1 | &n3));

@@ -94,7 +94,7 @@ public:
   //@{ 
   /// Returns constant reference the \a i 'th variable
   Node* node(size_t i) const { 
-    DAI_DEBASSERT( i < nrVars() );
+    DAI_DEBASSERT( i < nrNodes() );
     return nodes_[i];
   }
 
@@ -124,27 +124,27 @@ public:
   /// Returns neighborhood structure
   const dai::BipartiteGraph& bipGraph() const { return _G; }
   /// Returns number of variables
-  size_t nrVars() const { return nodes().size(); }
+  size_t nrNodes() const { return nodes().size(); }
   /// Returns number of factors
   size_t nrFactors() const { return factors().size(); }
   /// Calculates number of edges
-  /** \note Time complexity: O(nrVars())
+  /** \note Time complexity: O(nrNodes())
   */
   size_t nrEdges() const { return _G.nrEdges(); }
 
   /// Returns the index of a particular variable
-  /** \note Time complexity: O(nrVars())
+  /** \note Time complexity: O(nrNodes())
    *  \throw OBJECT_NOT_FOUND if the variable is not part of this factor graph
    */
-  size_t findNode(const Node* n) const {
+  size_t findNode(const Node *n) const {
     size_t i = find(nodes().begin(), nodes().end(), n) - nodes().begin();
-    if( i == nrVars() )
+    if( i == nrNodes() )
       DAI_THROW(OBJECT_NOT_FOUND);
     return i;
   }
 
   /// Returns a set of indexes corresponding to a set of variables
-  /** \note Time complexity: O( nrVars() * ns.size() )
+  /** \note Time complexity: O( nrNodes() * ns.size() )
    *  \throw OBJECT_NOT_FOUND if one of the variables is not part of this factor graph
    */
   dai::SmallSet<size_t> findNodes(const NodeSet& ns) const {
@@ -158,7 +158,7 @@ public:
   /** \note Time complexity: O(nrFactors())
    *  \throw OBJECT_NOT_FOUND if no factor in this factor graph depends on those variables
    */
-  size_t findFactor( const NodeSet& ns ) const {
+  size_t findFactor(const NodeSet& ns) const {
     size_t I;
     for( I = 0; I < nrFactors(); I++ )
       if( factor(I).nodes() == ns )

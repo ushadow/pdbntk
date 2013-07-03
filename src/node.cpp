@@ -6,10 +6,17 @@ using namespace std;
 
 namespace pdbntk {
 
-Node::Node(uint ni, CondProbDist *cpd) : 
-    index_(ni), cpd_(cpd), fixed(false), is_constructed(false) {}
+Node::Node(uint ni, CondProbDist *cpd, bool observed) : 
+    index_(ni), cpd_(cpd), observed_(observed), is_constructed(false) {}
 
 Node::~Node() {} 
+
+uint Node::size() const {
+  if (observed_)
+    return 1;
+  else
+    return cpd_->node_size();
+}
 
 void Node::set_data_index(uint di) {
 	data_index = di;
@@ -39,11 +46,6 @@ void Node::add_intra_parent(uint data_index, uint node_size) {
 	// node_size: output size of parent
 	parents_1.push_back(data_index);
 	parents_1_sizes.push_back(node_size);
-}
-
-void Node::fix(bool flag) {
-	// Fix the node (flag=1), or unfix the node (flag=0).
-	fixed = flag;
 }
 
 void Node::set_parentmap(mocapy::ParentMap * pm) {

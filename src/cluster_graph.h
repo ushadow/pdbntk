@@ -34,7 +34,7 @@ public:
   ClusterGraph() : _G(), nodes_(), _clusters() {}
 
   /// Construct from vector of NodeSet 's
-  ClusterGraph( const std::vector<NodeSet>& cls );
+  ClusterGraph(const std::vector<NodeSet>& cls);
 
   /// Construct from a factor graph
   /** Creates cluster graph which has factors in \a fg as clusters if \a onlyMaximal == \c false,
@@ -49,14 +49,14 @@ public:
   const dai::BipartiteGraph& bipGraph() const { return _G; }
 
   /// Returns number of variables
-  size_t nrVars() const { return nodes_.size(); }
+  size_t nrNodes() const { return nodes_.size(); }
 
   /// Returns a constant reference to the variables
   const std::vector<Node*>& nodes() const { return nodes_; }
 
   /// Returns a constant reference to the \a i'th variable
   const Node* node(size_t i) const {
-    DAI_DEBASSERT( i < nrVars() );
+    DAI_DEBASSERT( i < nrNodes() );
     return nodes_[i]; 
   }
 
@@ -166,7 +166,7 @@ public:
 
   /// Erases all clusters that contain the \a i 'th variable
   ClusterGraph& eraseSubsuming( size_t i ) {
-    DAI_ASSERT( i < nrVars() );
+    DAI_ASSERT( i < nrNodes() );
     while( _G.nb1(i).size() ) {
       _clusters.erase( _clusters.begin() + _G.nb1(i)[0] );
       _G.eraseNode2( _G.nb1(i)[0] );
@@ -178,7 +178,7 @@ public:
   /** \note This function can be better optimized
   */
   NodeSet elimNode(size_t i) {
-    DAI_ASSERT( i < nrVars() );
+    DAI_ASSERT( i < nrNodes() );
     NodeSet Di = Delta( i );
     insert( Di / const_cast<Node*>(node(i)));
     eraseSubsuming( i );

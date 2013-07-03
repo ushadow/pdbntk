@@ -26,7 +26,7 @@ ClusterGraph::ClusterGraph( const std::vector<NodeSet> & cls ) : _G(), nodes_(),
       _clusters.push_back( cl );
       for( NodeSet::const_iterator n = cl.begin(); n != cl.end(); n++ ) {
         size_t n1 = find( nodes().begin(), nodes().end(), *n ) - nodes().begin();
-        if( n1 == nrVars() )
+        if( n1 == nrNodes() )
           // add variable
           nodes_.push_back( *n );
         edges.push_back( Edge( n1, n2 ) );
@@ -35,14 +35,14 @@ ClusterGraph::ClusterGraph( const std::vector<NodeSet> & cls ) : _G(), nodes_(),
   }
 
   // Create bipartite graph
-  _G.construct( nrVars(), nrClusters(), edges.begin(), edges.end() );
+  _G.construct( nrNodes(), nrClusters(), edges.begin(), edges.end() );
 }
 
 
-ClusterGraph::ClusterGraph( const FactorGraph& fg, bool onlyMaximal ) : _G( fg.nrVars(), 0 ), nodes_(), _clusters() {
+ClusterGraph::ClusterGraph( const FactorGraph& fg, bool onlyMaximal ) : _G( fg.nrNodes(), 0 ), nodes_(), _clusters() {
   // copy variables
-  nodes_.reserve( fg.nrVars() );
-  for( size_t i = 0; i < fg.nrVars(); i++ )
+  nodes_.reserve( fg.nrNodes() );
+  for( size_t i = 0; i < fg.nrNodes(); i++ )
     nodes_.push_back( fg.node(i) );
 
   if( onlyMaximal ) {

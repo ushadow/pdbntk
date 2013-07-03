@@ -45,7 +45,7 @@ void RegionGraph::construct( const FactorGraph &fg, const std::vector<NodeSet> &
 void RegionGraph::constructCVM( const FactorGraph &fg, const std::vector<NodeSet> &cl) {
   using std::pair;
 
-  DLOG(INFO) << "constructCVM called (" << fg.nrVars() << " vars, " << fg.nrFactors() << " facs, " << cl.size() << " clusters)";
+  DLOG(INFO) << "constructCVM called (" << fg.nrNodes() << " vars, " << fg.nrFactors() << " facs, " << cl.size() << " clusters)";
 
   // Retain only maximal clusters
   DLOG(INFO) << "  Constructing ClusterGraph";

@@ -56,7 +56,7 @@ void FactorGraph::constructGraph( size_t nrEdges ) {
   }
 
   // create bipartite graph
-  _G.construct( nrVars(), nrFactors(), edges.begin(), edges.end() );
+  _G.construct( nrNodes(), nrFactors(), edges.begin(), edges.end() );
 }
 
 
@@ -210,12 +210,12 @@ void FactorGraph::printDot( std::ostream &os ) const {
   using std::endl;
   os << "graph FactorGraph {" << endl;
   os << "node[shape=circle,width=0.4,fixedsize=true];" << endl;
-  for( size_t i = 0; i < nrVars(); i++ )
+  for( size_t i = 0; i < nrNodes(); i++ )
     os << "\tv" << node(i)->index() << ";" << endl;
   os << "node[shape=box,width=0.3,height=0.3,fixedsize=true];" << endl;
   for( size_t I = 0; I < nrFactors(); I++ )
     os << "\tf" << I << ";" << endl;
-  for( size_t i = 0; i < nrVars(); i++ )
+  for( size_t i = 0; i < nrNodes(); i++ )
     bforeach( const dai::Neighbor &I, nbV(i) )  // for all neighboring factors I of i
       os << "\tv" << node(i)->index() << " -- f" << I << ";" << endl;
   os << "}" << endl;
@@ -223,8 +223,8 @@ void FactorGraph::printDot( std::ostream &os ) const {
 
 
 dai::GraphAL FactorGraph::MarkovGraph() const {
-  dai::GraphAL G( nrVars() );
-  for( size_t i = 0; i < nrVars(); i++ )
+  dai::GraphAL G( nrNodes() );
+  for( size_t i = 0; i < nrNodes(); i++ )
     bforeach( const dai::Neighbor &I, nbV(i) )
       bforeach( const dai::Neighbor &j, nbF(I) )
       if( i < j )
@@ -449,7 +449,7 @@ FactorGraph FactorGraph::maximalFactors() const {
   for( size_t I = 0; I < nrFactors(); I++ )
     facs[newindex[maxfac[I]]] *= factor(I);
 
-  return FactorGraph( facs.begin(), facs.end(), nodes().begin(), nodes().end(), facs.size(), nrVars() );
+  return FactorGraph( facs.begin(), facs.end(), nodes().begin(), nodes().end(), facs.size(), nrNodes() );
 }
 
 

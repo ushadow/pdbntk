@@ -88,12 +88,13 @@ SET(CMAKE_CXX_FLAGS "-DRANDDUMMY -O3 -Wall -fmessage-length=0")
 SET(MOCAPYLIB MocapyDR CACHE STRING "Mocapy library used when linking executables")
 ENDIF(BUILD_DUMMYRANDOM)
 
-SET(PROGS jtree_test)
+SET(PROGS jtree_test cluster_graph_test)
 
 FOREACH(p ${PROGS})
-        add_executable(${p} ${p}.cpp)
-        target_link_libraries (${p} ${PDBNTKLIB} ${MOCAPYLIB} ${DAILIB} ${GLOG}
-            ${GTESLIB} ${GTESTMAINLIB} ${Boost_SERIALIZATION_LIBRARY}
-            ${GMPXX_LIBRARIES} ${GMP_LIBRARIES}
-            ${LAPACK_LIBRARY} ${CMAKE_FLIB})
+  add_executable(${p} ${p}.cpp)
+  target_link_libraries (${p} ${PDBNTKLIB} ${MOCAPYLIB} ${DAILIB} ${GLOG}
+      ${GTESLIB} ${GTESTMAINLIB} ${Boost_SERIALIZATION_LIBRARY}
+      ${GMPXX_LIBRARIES} ${GMP_LIBRARIES}
+      ${LAPACK_LIBRARY} ${CMAKE_FLIB})
+    ADD_TEST(${p} ${EXECUTABLE_OUTPUT_PATH}/${p})
 ENDFOREACH(p)

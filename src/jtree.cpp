@@ -34,7 +34,7 @@ void JTree::setProperties( const dai::PropertySet &opts ) {
   if (opts.hasKey("heuristic"))
     props.heuristic = opts.getStringAs<Properties::HeuristicType>("heuristic");
   else
-    props.heuristic = Properties::HeuristicType::MINFILL;
+    props.heuristic = Properties::HeuristicType::WEIGHTEDMINFILL;
   if (opts.hasKey("maxmem"))
     props.maxmem = opts.getStringAs<size_t>("maxmem");
   else
@@ -65,8 +65,9 @@ std::string JTree::printProperties() const {
 }
 
 
-JTree::JTree( const FactorGraph &fg, const dai::PropertySet &opts, bool automatic ) : DAIAlgRG(), _mes(), _logZ(), RTree(), Qa(), Qb(), props() {
-  setProperties( opts );
+JTree::JTree(const FactorGraph &fg, const dai::PropertySet &opts, bool automatic)
+    : DAIAlgRG(), _mes(), _logZ(), RTree(), Qa(), Qb(), props() {
+  setProperties(opts);
 
   if(automatic) {
     // Create ClusterGraph which contains maximal factors as clusters
@@ -529,11 +530,11 @@ std::vector<Node*> JTree::findMaximum() const {
   using std::vector;
   using std::stack;
 
-  vector<Node*> maximum( nrVars() );
-  vector<bool> visitedVars( nrVars(), false );
-  vector<bool> visitedORs( nrORs(), false );
+  vector<Node*> maximum(nrNodes());
+  vector<bool> visitedVars(nrNodes(), false);
+  vector<bool> visitedORs(nrORs(), false);
   stack<size_t> scheduledORs;
-  scheduledORs.push( 0 );
+  scheduledORs.push(0);
   while( !scheduledORs.empty() ) {
     size_t alpha = scheduledORs.top();
     scheduledORs.pop();
