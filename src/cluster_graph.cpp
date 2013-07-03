@@ -64,17 +64,17 @@ ClusterGraph::ClusterGraph( const FactorGraph& fg, bool onlyMaximal ) : _G( fg.n
 }
 
 
-size_t sequentialVariableElimination::operator()( const ClusterGraph &cl, const std::set<size_t> &/*remainingVars*/ ) {
+size_t sequentialVariableElimination::operator()(const ClusterGraph &cl, const std::set<size_t> &/*remainingVars*/ ) {
   return cl.findNode( seq.at(i++) );
 }
 
 
-size_t greedyVariableElimination::operator()( const ClusterGraph &cl, const std::set<size_t> &remainingVars ) {
+size_t greedyVariableElimination::operator()(const ClusterGraph &cl, const std::set<size_t> &remainingVars) {
   set<size_t>::const_iterator lowest = remainingVars.end();
   size_t lowest_cost = -1UL;
-  for( set<size_t>::const_iterator i = remainingVars.begin(); i != remainingVars.end(); i++ ) {
-    size_t cost = heuristic( cl, *i );
-    if( lowest == remainingVars.end() || lowest_cost > cost ) {
+  for (set<size_t>::const_iterator i = remainingVars.begin(); i != remainingVars.end(); i++) {
+    size_t cost = heuristic(cl, *i);
+    if(lowest == remainingVars.end() || lowest_cost > cost) {
       lowest = i;
       lowest_cost = cost;
     }
@@ -116,16 +116,16 @@ size_t eliminationCost_MinFill( const ClusterGraph &cl, size_t i ) {
 }
 
 
-size_t eliminationCost_WeightedMinFill( const ClusterGraph &cl, size_t i ) {
-  SmallSet<size_t> id_n = cl.bipGraph().delta1( i );
+size_t eliminationCost_WeightedMinFill(const ClusterGraph &cl, size_t i) {
+  SmallSet<size_t> id_n = cl.bipGraph().delta1(i);
 
   size_t cost = 0;
   // for each unordered pair {i1,i2} adjacent to n
-  for( SmallSet<size_t>::const_iterator it1 = id_n.begin(); it1 != id_n.end(); it1++ )
-    for( SmallSet<size_t>::const_iterator it2 = it1; it2 != id_n.end(); it2++ )
-      if( it1 != it2 ) {
+  for (SmallSet<size_t>::const_iterator it1 = id_n.begin(); it1 != id_n.end(); it1++)
+    for(SmallSet<size_t>::const_iterator it2 = it1; it2 != id_n.end(); it2++)
+      if(it1 != it2) {
         // if i1 and i2 are not adjacent, eliminating n would make them adjacent
-        if( !cl.adj(*it1, *it2) )
+        if(!cl.adj(*it1, *it2))
           cost += cl.nodes()[*it1]->size() * cl.nodes()[*it2]->size();
       }
 

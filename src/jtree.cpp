@@ -70,7 +70,7 @@ JTree::JTree( const FactorGraph &fg, const dai::PropertySet &opts, bool automati
 
   if(automatic) {
     // Create ClusterGraph which contains maximal factors as clusters
-    ClusterGraph _cg( fg, true );
+    ClusterGraph _cg(fg, true);
     DLOG(INFO) << "Initial clusters: " << _cg;
 
     // Use heuristic to guess optimal elimination sequence
@@ -92,10 +92,10 @@ JTree::JTree( const FactorGraph &fg, const dai::PropertySet &opts, bool automati
         DAI_THROW(UNKNOWN_ENUM_VALUE);
     }
     size_t fudge = 6; // this yields a rough estimate of the memory needed (for some reason not yet clearly understood)
-    std::vector<NodeSet> ElimVec = _cg.VarElim(greedyVariableElimination( ec ), props.maxmem / (sizeof(Real) * fudge) ).eraseNonMaximal().clusters();
+    std::vector<NodeSet> ElimVec = _cg.VarElim(greedyVariableElimination(ec), props.maxmem / (sizeof(Real) * fudge)).eraseNonMaximal().clusters();
     DLOG(INFO) << "VarElim result: " << ElimVec; 
     // Generate the junction tree corresponding to the elimination sequence
-    GenerateJT( fg, ElimVec );
+    GenerateJT(fg, ElimVec);
   }
 }
 

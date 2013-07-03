@@ -1,21 +1,20 @@
 #ifndef PDBNTK_NODE_H_
 #define PDBNTK_NODE_H_
 
-#include "mocapy.h"
-#include "cond_prob_dist.h"
+#include "cpd/cond_prob_dist.h"
+#include "framework/parentmap.h"
 
 #include <string>
 #include <vector>
+#include <iostream>
 
 namespace pdbntk {
+
+class CondProbDist;
 
 enum eSliceType {
 	TIED, START, END
 };
-
-class Node;
-
-std::ostream& operator<<(std::ostream&, const Node&);
 
 /// A node in the Bayesian network.
 class Node {
@@ -28,6 +27,7 @@ public:
 /// Accessors
 //@{
   uint size() const { return cpd_->node_size(); }
+  uint index() const { return index_; }
 //@}
 
 	void add_intra_child(Node* n);
@@ -36,7 +36,6 @@ public:
 	void add_intra_parent(uint data_index, uint node_size);
 	void fix(bool flag);
 	std::string get_name() {return name;}
-  uint index() { return index_; }
 	void set_name(const char* new_name) {name = new_name;}
   virtual void set_parentmap(mocapy::ParentMap * pm);
 
@@ -112,5 +111,9 @@ void Node::serialize(Archive & ar, const unsigned int version) {
   ar & name;
 }
 
+inline std::ostream& operator<<(std::ostream& os, const Node *node) {
+  os << node->index();
+  return os;
+}
 }
 #endif // PDBNTK_NODE_H_ 

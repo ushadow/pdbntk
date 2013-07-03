@@ -8,13 +8,14 @@
 namespace pdbntk {
 
 enum eCPDType {
-     DISCRETE, GAUSSIAN, DIRICHLET, KENT, VONMISES, VONMISES2D, POISSON, MULTINOMIAL, BIPPO
+  DISCRETE, GAUSSIAN
 };
 
 /// Represents a conditional probability distribution (CPD). CPD consists two
 /// parts: the density function and the estimated sufficient statistics.
 class CondProbDist {
 public:
+  /// This object takes the ownership of \a ess and \a density.
 	CondProbDist(eCPDType type, mocapy::ESSBase *ess, mocapy::DensitiesBase *density) 
       : cpd_type_(type), ess_(ess), density_(density) {};
 

@@ -70,4 +70,5 @@ bool Node::operator<= (const Node &n) const {
 bool Node::operator!= (const Node &n) const { 
   return index_ > n.index_; 
 }
+
 }

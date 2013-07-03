@@ -49,7 +49,7 @@ class Factor {
   public:
     Factor() : ns_() {}
     /// Constructs factor depending on the node \a n. 
-    Factor(Node* n) : ns_(n) {}
+    Factor(Node *n) : ns_(n) {}
 
     /// Constructs factor depending on variables in \a vars with uniform distribution
     Factor(const NodeSet& nodes) : ns_(nodes) {}
