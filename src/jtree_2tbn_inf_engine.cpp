@@ -6,13 +6,17 @@
 
 namespace pdbntk {
 
-JTree2TBNInfEngine::JTree2TBNInfEngine(const FactorGraph &fg15,
-    const FactorGraph &fg1) {
+JTree2TBNInfEngine::JTree2TBNInfEngine(const FactorGraph &fg1,
+    const FactorGraph &fg15, const NodeSet &interface1,
+    const NodeSet &interface2) {
   dai::PropertySet infprops;
   infprops.set("updates", std::string("HUGIN"));
-  // Creates a jtree engine for 1.5 slice.
-  jtree_engine_.reset(new JTree(fg15, infprops)); 
+  infprops.set("root", interface1);
   jtree_engine1_.reset(new JTree(fg1, infprops)); 
+
+  // Creates a jtree engine for 1.5 slice.
+  infprops.set("root", interface2);
+  jtree_engine_.reset(new JTree(fg15, infprops)); 
 }
 
 double JTree2TBNInfEngine::EnterEvidence(const mocapy::Sequence &evidence) {

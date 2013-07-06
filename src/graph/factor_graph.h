@@ -58,7 +58,7 @@ class FactorGraph {
 private:
 /// Stores the neighborhood structure
 dai::BipartiteGraph           _G;
-/// Stores the variables
+/// Stores the nodes in sorted order.
 std::vector<Node*>         nodes_;
 /// Stores the factors
 std::vector<Factor>      _factors;
@@ -91,7 +91,7 @@ public:
 
   /// \name Accessors and mutators
   //@{ 
-  /// Returns constant pointer the \a i 'th variable
+  /// Returns pointer the \a i 'th variable
   Node* node(size_t i) const { 
     DAI_DEBASSERT( i < nrNodes() );
     return nodes_[i];
@@ -131,7 +131,7 @@ public:
   */
   size_t nrEdges() const { return _G.nrEdges(); }
 
-  /// Returns the index of a particular variable
+  /// Returns the index of a particular node. 
   /** \note Time complexity: O(nrNodes())
    *  \throw OBJECT_NOT_FOUND if the variable is not part of this factor graph
    */

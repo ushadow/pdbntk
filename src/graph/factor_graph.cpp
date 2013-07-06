@@ -16,9 +16,9 @@
 
 namespace pdbntk {
 
-FactorGraph::FactorGraph( const std::vector<Factor> &P ) : _G(), _backup() {
+FactorGraph::FactorGraph(const std::vector<Factor> &P) : _G(), _backup() {
   using std::set;
-  // add factors, obtain variables
+  // add factors, obtain nodes. 
   set<Node*, NodeComparator> varset;
   _factors.reserve(P.size());
   size_t nrEdges = 0;

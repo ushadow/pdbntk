@@ -34,6 +34,7 @@ public:
   /// length of this vector. If the node is observed, its size is 1.
   uint size() const; 
   uint index() const { return index_; }
+  bool observed() const { return observed_; }
 //@}
 
 	void add_intra_child(Node* n);

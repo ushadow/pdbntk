@@ -18,7 +18,7 @@ using std::shared_ptr;
 using std::vector;
 using std::unique_ptr;
 
-class JTreeTest : public testing::Test {
+class JTreeTestF : public testing::Test {
  protected:
   virtual void SetUp() {
     vector<Factor> factors;
@@ -75,7 +75,7 @@ bool IsEqFactor(const uint expected[], Factor f) {
   return ret;
 }
 
-TEST_F(JTreeTest, MaximalCliques) {
+TEST_F(JTreeTestF, MaximalCliques) {
   uint qa0[4] = {1, 2, 3, 5};
   uint qa1[3] = {2, 5, 6};
   uint qa2[3] = {5, 6, 7};
@@ -93,11 +93,50 @@ TEST_F(JTreeTest, MaximalCliques) {
   EXPECT_PRED2(IsEqFactor, qb0, jtree_->Qb[0]);
   EXPECT_PRED2(IsEqFactor, qb1, jtree_->Qb[1]);
   EXPECT_PRED2(IsEqFactor, qb2, jtree_->Qb[2]);
+ 
+  size_t root = jtree_->RTree[0].first; 
+  EXPECT_EQ(2, root);
 }
 
-TEST_F(JTreeTest, Properties) {
+TEST_F(JTreeTestF, Properties) {
   PropertySet ps = jtree_->getProperties();
   NodeSet ns = ps.getAs<NodeSet>("root");
   NodeSet expected(n5_.get(), n6_.get());
   EXPECT_EQ(expected | n7_.get(), ns);
+}
+
+TEST(JTreeTest, DifferentFG) {
+  vector<Factor> factors;
+
+  unique_ptr<CondProbDist> cpd1(CPDFactory::NewDiscreteCPD(13));
+  unique_ptr<CondProbDist> cpd2(CPDFactory::NewDiscreteCPD(44));
+  unique_ptr<CondProbDist> cpd3(CPDFactory::NewDiscreteCPD(2));
+  unique_ptr<CondProbDist> cpd4(CPDFactory::NewGaussianCPD(9));
+
+  Node n1(1, cpd1.get(), true);
+  Node n2(2, cpd2.get());
+  Node n3(3, cpd3.get(), true);
+  Node n4(4, cpd4.get(), true);
+
+  NodeSet ns1(&n1, &n2);
+  factors.push_back(Factor(ns1 | &n3));
+
+  factors.push_back(Factor(NodeSet(&n2, &n4)));
+
+  pdbntk::FactorGraph fg(factors);
+  
+  PropertySet ps;
+  ps.set("root", ns1 | &n3);
+
+  JTree jtree(fg, ps);
+  uint qa0[3] = {1, 2, 3};
+  uint qa1[2] = {2, 4};
+
+  EXPECT_PRED2(IsEqFactor, qa0, jtree.Qa[0]);
+  EXPECT_PRED2(IsEqFactor, qa1, jtree.Qa[1]);
+
+  uint qb0[1] = {2};
+  EXPECT_PRED2(IsEqFactor, qb0, jtree.Qb[0]);
+
+  EXPECT_EQ(0, jtree.RTree[0].first);
 }

@@ -61,13 +61,9 @@ class ClusterGraphTestF : public testing::Test {
   unique_ptr<Node> n1_, n2_, n3_, n4_, n5_, n6_, n7_, n8_;
 };
 
-TEST_F(ClusterGraphTestF, Cliques) {
+TEST_F(ClusterGraphTestF, ClusterGraph) {
   EXPECT_EQ((uint) 7, cg_->nrNodes());
   EXPECT_EQ((uint) 5, cg_->nrClusters());
-
-  vector<NodeSet> elim_cl = cg_->VarElim(pdbntk::greedyVariableElimination(
-        pdbntk::eliminationCost_WeightedMinFill)).eraseNonMaximal().clusters();
-  LOG(INFO) << elim_cl;
 }
 
 TEST_F(ClusterGraphTestF, EleiminationOrder) {
