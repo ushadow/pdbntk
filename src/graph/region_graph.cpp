@@ -169,14 +169,14 @@ void RegionGraph::RecomputeORs() {
     OR(alpha).InitPot();
   for (size_t i = 0; i < nrFactors(); i++)
     if (fac2OR(i) != -1U)
-      OR(fac2OR(i) *= factor(i);
+      OR(fac2OR(i)) *= factor(i);
 }
 
 void RegionGraph::RecomputeORs(const NodeSet &ns) {
 }
 
 
-void RegionGraph::recomputeOR( size_t I ) {
+void RegionGraph::recomputeOR(size_t I) {
 }
 
 

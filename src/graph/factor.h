@@ -5,7 +5,8 @@
 #define PDBNTK_FACTOR_H_ 
 
 #include "node.h"
-#include "../utils.h"
+#include "node_set.h"
+#include "../util.h"
 
 #include <iostream>
 #include <functional>
@@ -76,12 +77,12 @@ class Factor {
   //@}
  
   Factor normalized() const;
-  Factor operator* (Real x) const;
-  Factor operator*= (Real x) const;
-  Factor operator* (const Factor& f) const;
-  Factor operator/ (const Factor& f) const;
-  Factor operator*= (const Factor& f) const;
-  Factor operator/= (const Factor& f) const;
+  Factor operator*(Real x) const;
+  Factor operator*=(Real x) const;
+  Factor operator*(const Factor& f) const;
+  Factor operator/(const Factor& f) const;
+  Factor operator*=(const Factor& f) const;
+  Factor operator/=(const Factor& f) const;
  
 // Mutators
 //@{

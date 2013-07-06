@@ -19,6 +19,7 @@ enum eSliceType {
 /// A node in the Bayesian network.
 class Node {
 public:
+  Node() {};
   /// \param cpd cannot be NULL, and this node does not take the ownership of
   //  the pointer.
 	Node(uint node_index, CondProbDist *cpd, bool observed = false); 
@@ -28,6 +29,9 @@ public:
 
 /// Accessors
 //@{
+  /// If the node is discrete, its size is the number of possible values it can
+  /// take on; if the node is continuous, it can be a vector and its size is the 
+  /// length of this vector. If the node is observed, its size is 1.
   uint size() const; 
   uint index() const { return index_; }
 //@}
@@ -116,5 +120,6 @@ inline std::ostream& operator<<(std::ostream& os, const Node *node) {
   os << node->index();
   return os;
 }
+
 }
 #endif // PDBNTK_NODE_H_ 

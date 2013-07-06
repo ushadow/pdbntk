@@ -19,19 +19,20 @@ namespace pdbntk {
 FactorGraph::FactorGraph( const std::vector<Factor> &P ) : _G(), _backup() {
   using std::set;
   // add factors, obtain variables
-  set<Node*> varset;
-  _factors.reserve( P.size() );
+  set<Node*, NodeComparator> varset;
+  _factors.reserve(P.size());
   size_t nrEdges = 0;
   for (std::vector<Factor>::const_iterator p2 = P.begin(); p2 != P.end(); p2++ ) {
     _factors.push_back( *p2 );
-    copy( p2->nodes().begin(), p2->nodes().end(), inserter( varset, varset.begin() ) );
+    copy(p2->nodes().begin(), p2->nodes().end(), inserter(varset, varset.begin()));
     nrEdges += p2->nodes().size();
   }
 
   // add nodes
   nodes_.reserve( varset.size() );
-  for( set<Node*>::const_iterator p1 = varset.begin(); p1 != varset.end(); p1++ )
-    nodes_.push_back( *p1 );
+  for (set<Node*>::const_iterator p1 = varset.begin(); p1 != varset.end(); p1++ ) {
+    nodes_.push_back(*p1);
+  }
 
   // create graph structure
   constructGraph( nrEdges );
@@ -52,7 +53,7 @@ void FactorGraph::constructGraph( size_t nrEdges ) {
   for( size_t i2 = 0; i2 < nrFactors(); i2++ ) {
     const NodeSet& ns = factor(i2).nodes();
     for( NodeSet::const_iterator q = ns.begin(); q != ns.end(); q++ )
-      edges.push_back( Edge(hashmap[(*q)->index()], i2) );
+      edges.push_back(Edge(hashmap[(*q)->index()], i2) );
   }
 
   // create bipartite graph
@@ -168,7 +169,7 @@ NodeSet FactorGraph::Delta( size_t i ) const {
 
 NodeSet FactorGraph::Delta( const NodeSet &ns ) const {
   NodeSet result;
-  for( NodeSet::const_iterator n = ns.begin(); n != ns.end(); n++ )
+  for (NodeSet::const_iterator n = ns.begin(); n != ns.end(); n++)
     result |= Delta(findNode(*n));
   return result;
 }
@@ -295,7 +296,7 @@ std::vector<NodeSet> FactorGraph::maximalFactorDomains() const {
 Real FactorGraph::logScore( const std::vector<size_t>& statevec ) const {
   // Construct a State object that represents statevec
   // This decouples the representation of the joint state in statevec from the factor graph
-  std::map<Node*, size_t> statemap;
+  std::map<const Node*, size_t> statemap;
   for( size_t i = 0; i < statevec.size(); i++ )
     statemap[node(i)] = statevec[i];
 
@@ -317,7 +318,7 @@ void FactorGraph::clamp(size_t i, std::vector<Real> x, bool backup) {
 }
 
 void FactorGraph::clampVar( size_t i, const std::vector<size_t> &is, bool backup ) {
-  Node* n = node(i);
+  Node *n = node(i);
   Factor mask_n(n);
 
   std::map<size_t, Factor> newFacs;
@@ -400,7 +401,7 @@ bool FactorGraph::isBinary() const {
 
 
 FactorGraph FactorGraph::clamped( size_t i, size_t state ) const {
-  Node* v = node( i );
+  Node* v = node(i);
   Real zeroth_order = (Real)1;
   std::vector<Factor> clamped_facs;
   for( size_t I = 0; I < nrFactors(); I++ ) {

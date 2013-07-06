@@ -14,7 +14,6 @@
 #define PDBNTK_REGIONGRAPH_H_ 
 
 #include "factor_graph.h"
-#include "../utils.h"
 
 #include <iostream>
 

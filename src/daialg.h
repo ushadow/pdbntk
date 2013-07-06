@@ -8,7 +8,6 @@
 
 #include "graph/factor_graph.h"
 #include "graph/region_graph.h"
-#include "utils.h"
 
 #include <string>
 #include <iostream>
@@ -78,7 +77,7 @@ class InfAlg {
         /// Returns the (approximate) marginal probability distribution of a variable.
         /** \note Before this method is called, run() should have been called.
          */
-        virtual Factor belief(Node *v) const { return belief( NodeSet(v) ); }
+        virtual Factor belief(Node* v) const { return belief( NodeSet(v) ); }
 
         /// Returns the (approximate) marginal probability distribution of a set of variables.
         /** \note Before this method is called, run() should have been called.
@@ -91,7 +90,7 @@ class InfAlg {
         /** For some approximate inference algorithms, using beliefV() is preferred to belief() for performance reasons.
          *  \note Before this method is called, run() should have been called.
          */
-        virtual Factor beliefV( size_t i ) const { return belief( fg().node(i) ); }
+        virtual Factor beliefV( size_t i ) const { return belief(fg().node(i)); }
 
         /// Returns the (approximate) marginal probability distribution of the variables on which factor \a I depends.
         /** For some approximate inference algorithms, using beliefF() is preferred to belief() for performance reasons.

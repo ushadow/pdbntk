@@ -71,7 +71,8 @@ TEST_F(ClusterGraphTestF, Cliques) {
 }
 
 TEST_F(ClusterGraphTestF, EleiminationOrder) {
-  EXPECT_EQ((size_t) 0, eliminationCost_WeightedMinFill(*cg_.get(), 1));
+  EXPECT_EQ((size_t) 0, eliminationCost_WeightedMinFill(*cg_.get(), 0));
+  EXPECT_EQ((size_t) 88, eliminationCost_WeightedMinFill(*cg_.get(), 1));
 }
 
 TEST(ClusterGraphTest, MaximalCliques) {

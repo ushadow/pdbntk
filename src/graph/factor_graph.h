@@ -6,7 +6,6 @@
 
 #include <dai/bipgraph.h>
 #include "factor.h"
-#include "../utils.h"
 
 #include <iostream>
 #include <map>
@@ -92,7 +91,7 @@ public:
 
   /// \name Accessors and mutators
   //@{ 
-  /// Returns constant reference the \a i 'th variable
+  /// Returns constant pointer the \a i 'th variable
   Node* node(size_t i) const { 
     DAI_DEBASSERT( i < nrNodes() );
     return nodes_[i];
@@ -176,7 +175,7 @@ public:
 
   /// Return all variables that occur in a factor involving the \a i 'th variable, itself excluded
   NodeSet delta(size_t i) const {
-    return Delta(i).erase(node(i));
+    return Delta(i).erase(const_cast<Node*>(node(i)));
   }
 
   /// Return all variables that occur in a factor involving some variable in \a vs, \a vs itself excluded

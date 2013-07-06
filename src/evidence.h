@@ -13,7 +13,6 @@
 #ifndef PDBNTK_EVIDENCE_H_
 #define PDBNTK_EVIDENCE_H_
 
-#include "utils.h"
 #include "graph/factor_graph.h" 
 #include <istream>
 #include <vector>
@@ -75,7 +74,7 @@ class Evidence {
 
   private:
       /// Read in tabular data from a stream and add the read samples to \c *this.
-      void addEvidenceTabFile( std::istream& is, std::map<std::string, Node*> &varMap );
+      void addEvidenceTabFile(std::istream& is, std::map<std::string, Node*> &varMap );
 };
 
 

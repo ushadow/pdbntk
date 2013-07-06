@@ -1,7 +1,3 @@
-SET(BUILD_RELEASE ON)
-SET(BUILD_DEBUG OFF)
-SET(BUILD_PROFILE OFF)
-
 SET(Boost_USE_STATIC_LIBS ON)
 
 FIND_PACKAGE(Boost COMPONENTS serialization program_options thread REQUIRED)
@@ -48,7 +44,7 @@ ENDIF(BUILD_RELEASE)
 
 IF(BUILD_DEBUG)
 SET(CMAKE_CXX_FLAGS "-g -O0 -Wall -fmessage-length=0 -fopenmp")
-SET(PDBNTKLIB pdbntk CACHE STRING "Mocapy library used when linking executables")
+SET(PDBNTKLIB pdbntkD) 
 ENDIF(BUILD_DEBUG)
 
 #IF(BUILD_PROFILE)

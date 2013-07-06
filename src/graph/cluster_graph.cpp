@@ -1,8 +1,8 @@
 #include "cluster_graph.h"
 
-#include "../utils.h"
 #include "factor_graph.h"
 #include "dai/smallset.h"
+#include "node_set.h"
 
 #include <set>
 #include <vector>
@@ -16,14 +16,14 @@ using std::set;
 using dai::Neighbor;
 using dai::SmallSet;
 
-ClusterGraph::ClusterGraph( const std::vector<NodeSet> & cls ) : _G(), nodes_(), _clusters() {
+ClusterGraph::ClusterGraph(const std::vector<NodeSet> & cls) : _G(), nodes_(), _clusters() {
   // construct nodes, clusters and edge list
-  vector<dai::Edge> edges;
-  bforeach( const NodeSet &cl, cls ) {
+  vector<Edge> edges;
+  bforeach(const NodeSet &cl, cls) {
     if( find( clusters().begin(), clusters().end(), cl ) == clusters().end() ) {
       // add cluster
       size_t n2 = nrClusters();
-      _clusters.push_back( cl );
+      _clusters.push_back(cl);
       for( NodeSet::const_iterator n = cl.begin(); n != cl.end(); n++ ) {
         size_t n1 = find( nodes().begin(), nodes().end(), *n ) - nodes().begin();
         if( n1 == nrNodes() )
@@ -43,7 +43,7 @@ ClusterGraph::ClusterGraph( const FactorGraph& fg, bool onlyMaximal ) : _G( fg.n
   // copy variables
   nodes_.reserve( fg.nrNodes() );
   for( size_t i = 0; i < fg.nrNodes(); i++ )
-    nodes_.push_back( fg.node(i) );
+    nodes_.push_back(fg.node(i));
 
   if( onlyMaximal ) {
     for( size_t I = 0; I < fg.nrFactors(); I++ )
@@ -65,7 +65,7 @@ ClusterGraph::ClusterGraph( const FactorGraph& fg, bool onlyMaximal ) : _G( fg.n
 
 
 size_t sequentialVariableElimination::operator()(const ClusterGraph &cl, const std::set<size_t> &/*remainingVars*/ ) {
-  return cl.findNode( seq.at(i++) );
+  return cl.findNode(seq.at(i++));
 }
 
 
@@ -89,7 +89,7 @@ size_t eliminationCost_MinNeighbors( const ClusterGraph &cl, size_t i ) {
 
 
 size_t eliminationCost_MinWeight( const ClusterGraph &cl, size_t i ) {
-  SmallSet<size_t> id_n = cl.bipGraph().delta1( i );
+  dai::SmallSet<size_t> id_n = cl.bipGraph().delta1( i );
 
   size_t cost = 1;
   for( SmallSet<size_t>::const_iterator it = id_n.begin(); it != id_n.end(); it++)
@@ -100,12 +100,12 @@ size_t eliminationCost_MinWeight( const ClusterGraph &cl, size_t i ) {
 
 
 size_t eliminationCost_MinFill( const ClusterGraph &cl, size_t i ) {
-  SmallSet<size_t> id_n = cl.bipGraph().delta1( i );
+  dai::SmallSet<size_t> id_n = cl.bipGraph().delta1( i );
 
   size_t cost = 0;
   // for each unordered pair {i1,i2} adjacent to n
-  for( SmallSet<size_t>::const_iterator it1 = id_n.begin(); it1 != id_n.end(); it1++ )
-    for( SmallSet<size_t>::const_iterator it2 = it1; it2 != id_n.end(); it2++ )
+  for(dai::SmallSet<size_t>::const_iterator it1 = id_n.begin(); it1 != id_n.end(); it1++ )
+    for(dai::SmallSet<size_t>::const_iterator it2 = it1; it2 != id_n.end(); it2++ )
       if( it1 != it2 ) {
         // if i1 and i2 are not adjacent, eliminating n would make them adjacent
         if( !cl.adj(*it1, *it2) )
@@ -115,14 +115,14 @@ size_t eliminationCost_MinFill( const ClusterGraph &cl, size_t i ) {
   return cost;
 }
 
-
 size_t eliminationCost_WeightedMinFill(const ClusterGraph &cl, size_t i) {
-  SmallSet<size_t> id_n = cl.bipGraph().delta1(i);
+  dai::SmallSet<size_t> id_n = cl.bipGraph().delta1(i);
 
   size_t cost = 0;
   // for each unordered pair {i1,i2} adjacent to n
-  for (SmallSet<size_t>::const_iterator it1 = id_n.begin(); it1 != id_n.end(); it1++)
-    for(SmallSet<size_t>::const_iterator it2 = it1; it2 != id_n.end(); it2++)
+  for (dai::SmallSet<size_t>::const_iterator it1 = id_n.begin();
+       it1 != id_n.end(); it1++)
+    for (dai::SmallSet<size_t>::const_iterator it2 = it1; it2 != id_n.end(); it2++)
       if(it1 != it2) {
         // if i1 and i2 are not adjacent, eliminating n would make them adjacent
         if(!cl.adj(*it1, *it2))

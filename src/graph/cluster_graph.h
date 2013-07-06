@@ -3,8 +3,8 @@
 
 #include "dai/bipgraph.h"
 #include "node.h"
-#include "../utils.h"
 #include "factor_graph.h"
+#include "node_set.h"
 
 #include <set>
 #include <vector>
@@ -34,7 +34,7 @@ public:
   ClusterGraph() : _G(), nodes_(), _clusters() {}
 
   /// Construct from vector of NodeSet 's
-  ClusterGraph(const std::vector<NodeSet>& cls);
+  explicit ClusterGraph(const std::vector<NodeSet>& cls);
 
   /// Construct from a factor graph
   /** Creates cluster graph which has factors in \a fg as clusters if \a onlyMaximal == \c false,
@@ -187,15 +187,6 @@ public:
   }
   //@}
 
-  /// \name Input/Ouput
-  //@{
-  /// Writes a ClusterGraph to an output stream
-  friend std::ostream& operator << (std::ostream& os, const ClusterGraph& cl) {
-    os << cl.clusters();
-    return os;
-  }
-  //@}
-
   /// \name Variable elimination
   //@{
   /// Performs Variable Elimination, keeping track of the interactions that are created along the way.
@@ -217,7 +208,7 @@ public:
     // Construct set of variable indices
     std::set<size_t> varindices;
     for (size_t i = 0; i < nodes_.size(); ++i)
-      varindices.insert( i );
+      varindices.insert(i);
 
     // Do variable elimination
     dai::BigInt totalStates = 0;
@@ -246,7 +237,7 @@ private:
 
 public:
   /// Construct from vector of variables
-  sequentialVariableElimination( const std::vector<Node*> s ) : seq(s), i(0) {}
+  sequentialVariableElimination(const std::vector<Node*> s) : seq(s), i(0) {}
 
   /// Returns next variable in sequence
   size_t operator()( const ClusterGraph &cl, const std::set<size_t> &/*remainingVars*/ );
@@ -311,6 +302,15 @@ size_t eliminationCost_MinFill( const ClusterGraph& cl, size_t i );
  *  The weight of an edge is the product of the number of states of the variables corresponding with its nodes.
  */
 size_t eliminationCost_WeightedMinFill( const ClusterGraph& cl, size_t i );
+  /// \name Input/Ouput
+  //@{
+  /// Writes a ClusterGraph to an output stream
+inline std::ostream& operator << (std::ostream& os, const ClusterGraph& cl) {
+    os << cl.clusters();
+    return os;
+  }
+  //@}
+
 } 
 
 #endif // PDBNTK_CLUSTER_GRAPH_H_

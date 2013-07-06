@@ -1,10 +1,6 @@
-#include <dai/util.h>
-#include <dai/weightedgraph.h>
-
 #include "jtree.h"
 #include "graph/cluster_graph.h"
 #include "graph/node.h"
-#include "utils.h"
 #include "graph/factor.h"
 #include "graph/factor_graph.h"
 
@@ -14,41 +10,48 @@
 
 namespace pdbntk {
 
-void JTree::setProperties( const dai::PropertySet &opts ) {
+using std::vector;
+using dai::DEdge;
+using dai::UEdge;
+using dai::WeightedGraph;
+using dai::RootedTree;
+using dai::GraphEL;
+
+void JTree::setProperties(const dai::PropertySet &opts) {
   using dai::PropertySet;
 
   // Default update type is HUGIN.
   if (opts.hasKey("updates"))
-    props.updates = opts.getStringAs<Properties::UpdateType>("updates");
+    props_.updates = opts.getStringAs<Properties::UpdateType>("updates");
   else
-    props.updates = Properties::UpdateType::HUGIN;
+    props_.updates = Properties::UpdateType::HUGIN;
       
-  if (opts.hasKey("verbose"))
-    props.verbose = opts.getStringAs<size_t>("verbose");
-  else
-    props.verbose = 0;
   if (opts.hasKey("inference"))
-    props.inference = opts.getStringAs<Properties::InfType>("inference");
+    props_.inference = opts.getStringAs<Properties::InfType>("inference");
   else
-    props.inference = Properties::InfType::SUMPROD;
+    props_.inference = Properties::InfType::SUMPROD;
+  
   if (opts.hasKey("heuristic"))
-    props.heuristic = opts.getStringAs<Properties::HeuristicType>("heuristic");
+    props_.heuristic = opts.getStringAs<Properties::HeuristicType>("heuristic");
   else
-    props.heuristic = Properties::HeuristicType::WEIGHTEDMINFILL;
-  if (opts.hasKey("maxmem"))
-    props.maxmem = opts.getStringAs<size_t>("maxmem");
-  else
-    props.maxmem = 0;
-}
+    props_.heuristic = Properties::HeuristicType::WEIGHTEDMINFILL;
 
+  if (opts.hasKey("maxmem"))
+    props_.maxmem = opts.getStringAs<size_t>("maxmem");
+  else
+    props_.maxmem = 0;
+
+  if (opts.hasKey("root"))
+    props_.root = opts.getAs<NodeSet>("root");
+}
 
 dai::PropertySet JTree::getProperties() const {
   dai::PropertySet opts;
-  opts.set( "verbose", props.verbose );
-  opts.set( "updates", props.updates );
-  opts.set( "inference", props.inference );
-  opts.set( "heuristic", props.heuristic );
-  opts.set( "maxmem", props.maxmem );
+  opts.set("updates", props_.updates);
+  opts.set("inference", props_.inference);
+  opts.set("heuristic", props_.heuristic);
+  opts.set("maxmem", props_.maxmem);
+  opts.set("root", props_.root);
   return opts;
 }
 
@@ -56,17 +59,16 @@ dai::PropertySet JTree::getProperties() const {
 std::string JTree::printProperties() const {
   std::stringstream s(std::stringstream::out );
   s << "[";
-  s << "verbose=" << props.verbose << ",";
-  s << "updates=" << props.updates << ",";
-  s << "heuristic=" << props.heuristic << ",";
-  s << "inference=" << props.inference << ",";
-  s << "maxmem=" << props.maxmem << "]";
+  s << "updates=" << props_.updates << ",";
+  s << "heuristic=" << props_.heuristic << ",";
+  s << "inference=" << props_.inference << ",";
+  s << "maxmem=" << props_.maxmem << "]";
   return s.str();
 }
 
 
 JTree::JTree(const FactorGraph &fg, const dai::PropertySet &opts, bool automatic)
-    : DAIAlgRG(), _mes(), _logZ(), RTree(), Qa(), Qb(), props() {
+    : DAIAlgRG(), mes_(), logz_(), RTree(), Qa(), Qb(), props_() {
   setProperties(opts);
 
   if(automatic) {
@@ -76,7 +78,7 @@ JTree::JTree(const FactorGraph &fg, const dai::PropertySet &opts, bool automatic
 
     // Use heuristic to guess optimal elimination sequence
     greedyVariableElimination::eliminationCostFunction ec(NULL);
-    switch( (size_t)props.heuristic ) {
+    switch( (size_t)props_.heuristic ) {
       case Properties::HeuristicType::MINNEIGHBORS:
         ec = eliminationCost_MinNeighbors;
         break;
@@ -93,7 +95,7 @@ JTree::JTree(const FactorGraph &fg, const dai::PropertySet &opts, bool automatic
         DAI_THROW(UNKNOWN_ENUM_VALUE);
     }
     size_t fudge = 6; // this yields a rough estimate of the memory needed (for some reason not yet clearly understood)
-    std::vector<NodeSet> ElimVec = _cg.VarElim(greedyVariableElimination(ec), props.maxmem / (sizeof(Real) * fudge)).eraseNonMaximal().clusters();
+    std::vector<NodeSet> ElimVec = _cg.VarElim(greedyVariableElimination(ec), props_.maxmem / (sizeof(Real) * fudge)).eraseNonMaximal().clusters();
     DLOG(INFO) << "VarElim result: " << ElimVec; 
     // Generate the junction tree corresponding to the elimination sequence
     GenerateJT(fg, ElimVec);
@@ -101,18 +103,14 @@ JTree::JTree(const FactorGraph &fg, const dai::PropertySet &opts, bool automatic
 }
 
 
-void JTree::construct(const FactorGraph &fg, const std::vector<NodeSet> &cl,
+void JTree::construct(const FactorGraph &fg, const vector<NodeSet> &cl,
                       bool verify) {
-  using std::vector;
-  using dai::UEdge;
-  using dai::Edge;
-
   // Copy the factor graph
   FactorGraph::operator=(fg);
 
   // Construct a weighted graph (each edge is weighted with the cardinality
   // of the intersection of the nodes, where the nodes are the elements of cl).
-  dai::WeightedGraph<int> JuncGraph;
+  WeightedGraph<int> JuncGraph;
   // Start by connecting all clusters with cluster zero, and weight zero,
   // in order to get a connected weighted graph
   for (size_t i = 1; i < cl.size(); i++)
@@ -127,7 +125,10 @@ void JTree::construct(const FactorGraph &fg, const std::vector<NodeSet> &cl,
   DLOG(INFO) << "Weightedgraph: " << JuncGraph;
 
   // Construct maximal spanning tree using Prim's algorithm
-  RTree = dai::MaxSpanningTree(JuncGraph, true);
+  RTree = MaxSpanningTree(JuncGraph, true);
+  size_t root = FindRoot(cl);
+  if (root < cl.size());
+    RTree = RootedTree(GraphEL(RTree.begin(), RTree.end()), root);
   DLOG(INFO) << "Spanning tree: " << RTree;
   DAI_DEBASSERT( RTree.size() == cl.size() - 1 );
 
@@ -150,7 +151,7 @@ void JTree::construct(const FactorGraph &fg, const std::vector<NodeSet> &cl,
         _fac2OR[I] = alpha;
         break;
       }
-    if( verify )
+    if (verify)
       DAI_ASSERT(alpha != nrORs());
   }
   RecomputeORs();
@@ -159,11 +160,11 @@ void JTree::construct(const FactorGraph &fg, const std::vector<NodeSet> &cl,
   // Inner regions are analogous to separators.
   _IRs.clear();
   _IRs.reserve(RTree.size());
-  vector<Edge> edges;
+  vector<dai::Edge> edges;
   edges.reserve(2 * RTree.size());
   for( size_t i = 0; i < RTree.size(); i++ ) {
-    edges.push_back(Edge(RTree[i].first, nrIRs()));
-    edges.push_back(Edge(RTree[i].second, nrIRs()));
+    edges.push_back(dai::Edge(RTree[i].first, nrIRs()));
+    edges.push_back(dai::Edge(RTree[i].second, nrIRs()));
     // inner clusters have counting number -1, except if they are empty
     NodeSet intersection = cl[RTree[i].first] & cl[RTree[i].second];
     _IRs.push_back(Region(intersection, intersection.size() ? -1.0 : 0.0));
@@ -194,27 +195,27 @@ void JTree::GenerateJT(const FactorGraph &fg, const std::vector<NodeSet> &cl) {
   construct(fg, cl, true);
 
   // Create messages
-  _mes.clear();
-  _mes.reserve( nrORs() );
-  for( size_t alpha = 0; alpha < nrORs(); alpha++ ) {
-    _mes.push_back(std::vector<Factor>() );
-    _mes[alpha].reserve( nbOR(alpha).size() );
-    bforeach( const dai::Neighbor &beta, nbOR(alpha) )
-      _mes[alpha].push_back(Factor(IR(beta)));
+  mes_.clear();
+  mes_.reserve(nrORs());
+  for (size_t alpha = 0; alpha < nrORs(); alpha++) {
+    mes_.push_back(std::vector<Factor>());
+    mes_[alpha].reserve(nbOR(alpha).size());
+    bforeach(const dai::Neighbor &beta, nbOR(alpha))
+      mes_[alpha].push_back(Factor(IR(beta)));
   }
 
   DLOG(INFO) << "Regiongraph generated by JTree::GenerateJT: " << *this;
 }
 
 
-Factor JTree::belief( const NodeSet &vs ) const {
+Factor JTree::belief(const NodeSet &vs) const {
   using std::vector;
   vector<Factor>::const_iterator beta;
   for( beta = Qb.begin(); beta != Qb.end(); beta++ )
     if( beta->nodes() >> vs )
       break;
   if( beta != Qb.end() ) {
-    if( props.inference == Properties::InfType::SUMPROD )
+    if( props_.inference == Properties::InfType::SUMPROD )
       return( beta->marginal(vs) );
     else
       return( beta->maxMarginal(vs) );
@@ -227,7 +228,7 @@ Factor JTree::belief( const NodeSet &vs ) const {
       DAI_THROW(BELIEF_NOT_AVAILABLE);
       return Factor();
     } else {
-      if( props.inference == Properties::InfType::SUMPROD )
+      if( props_.inference == Properties::InfType::SUMPROD )
         return( alpha->marginal(vs) );
       else
         return( alpha->maxMarginal(vs) );
@@ -251,31 +252,31 @@ void JTree::runHUGIN() {
     Qa[alpha] = OR(alpha);
 
   // CollectEvidence
-  _logZ = 0.0;
+  logz_ = 0.0;
   for( size_t i = RTree.size(); (i--) != 0; ) {
     //      Make outer region RTree[i].first consistent with outer region RTree[i].second
     //      IR(i) = seperator OR(RTree[i].first) && OR(RTree[i].second)
     Factor new_Qb;
-    if( props.inference == Properties::InfType::SUMPROD )
+    if( props_.inference == Properties::InfType::SUMPROD )
       new_Qb = Qa[RTree[i].second].marginal( IR( i ), false );
     else
       new_Qb = Qa[RTree[i].second].maxMarginal( IR( i ), false );
 
-    _logZ += log(new_Qb.normalize());
+    logz_ += log(new_Qb.normalize());
     Qa[RTree[i].first] *= new_Qb / Qb[i];
     Qb[i] = new_Qb;
   }
   if( RTree.empty() )
-    _logZ += log(Qa[0].normalize() );
+    logz_ += log(Qa[0].normalize() );
   else
-    _logZ += log(Qa[RTree[0].first].normalize());
+    logz_ += log(Qa[RTree[0].first].normalize());
 
   // DistributeEvidence
   for( size_t i = 0; i < RTree.size(); i++ ) {
     //      Make outer region RTree[i].second consistent with outer region RTree[i].first
     //      IR(i) = seperator OR(RTree[i].first) && OR(RTree[i].second)
     Factor new_Qb;
-    if( props.inference == Properties::InfType::SUMPROD )
+    if( props_.inference == Properties::InfType::SUMPROD )
       new_Qb = Qa[RTree[i].first].marginal( IR( i ) );
     else
       new_Qb = Qa[RTree[i].first].maxMarginal( IR( i ) );
@@ -292,7 +293,7 @@ void JTree::runHUGIN() {
 
 void JTree::runShaferShenoy() {
   // First pass
-  _logZ = 0.0;
+  logz_ = 0.0;
   for( size_t e = nrIRs(); (e--) != 0; ) {
     // send a message from RTree[e].second to RTree[e].first
     // or, actually, from the seperator IR(e) to RTree[e].first
@@ -305,11 +306,11 @@ void JTree::runShaferShenoy() {
     bforeach( const dai::Neighbor &k, nbOR(i) )
       if( k != e )
         msg *= message(i, k.iter);
-    if( props.inference == Properties::InfType::SUMPROD )
+    if( props_.inference == Properties::InfType::SUMPROD )
       message( j, _e ) = msg.marginal( IR(e), false );
     else
       message( j, _e ) = msg.maxMarginal( IR(e), false );
-    _logZ += log( message(j,_e).normalize() );
+    logz_ += log( message(j,_e).normalize() );
   }
 
   // Second pass
@@ -322,7 +323,7 @@ void JTree::runShaferShenoy() {
     bforeach( const dai::Neighbor &k, nbOR(i) )
       if( k != e )
         msg *= message(i, k.iter);
-    if( props.inference == Properties::InfType::SUMPROD )
+    if( props_.inference == Properties::InfType::SUMPROD )
       message( j, _e ) = msg.marginal( IR(e) );
     else
       message( j, _e ) = msg.maxMarginal( IR(e) );
@@ -334,10 +335,10 @@ void JTree::runShaferShenoy() {
     bforeach( const dai::Neighbor &k, nbOR(alpha) )
       piet *= message( alpha, k.iter );
     if( nrIRs() == 0 ) {
-      _logZ += log( piet.normalize() );
+      logz_ += log( piet.normalize() );
       Qa[alpha] = piet;
     } else if( alpha == nbIR(0)[0].node /*RTree[0].first*/ ) {
-      _logZ += log( piet.normalize() );
+      logz_ += log( piet.normalize() );
       Qa[alpha] = piet;
     } else
       Qa[alpha] = piet.normalized();
@@ -345,7 +346,7 @@ void JTree::runShaferShenoy() {
 
   // Only for logZ (and for belief)...
   for( size_t beta = 0; beta < nrIRs(); beta++ ) {
-    if( props.inference == Properties::InfType::SUMPROD )
+    if( props_.inference == Properties::InfType::SUMPROD )
       Qb[beta] = Qa[nbIR(beta)[0].node].marginal( IR(beta) );
     else
       Qb[beta] = Qa[nbIR(beta)[0].node].maxMarginal( IR(beta) );
@@ -354,9 +355,9 @@ void JTree::runShaferShenoy() {
 
 
 Real JTree::run() {
-  if( props.updates == Properties::UpdateType::HUGIN )
+  if( props_.updates == Properties::UpdateType::HUGIN )
     runHUGIN();
-  else if( props.updates == Properties::UpdateType::SHSH )
+  else if( props_.updates == Properties::UpdateType::SHSH )
     runShaferShenoy();
   return 0.0;
 }
@@ -370,25 +371,24 @@ Real JTree::logZ() const {
         s += OR(alpha).c() * Qa[alpha].entropy();
         s += (OR(alpha).log(true) * Qa[alpha]).sum();
         }
-        DAI_ASSERT( abs( _logZ - s ) < 1e-8 );
+        DAI_ASSERT( abs( logz_ - s ) < 1e-8 );
         return s;*/
-  return _logZ;
+  return logz_;
 }
 
 
-size_t JTree::findEfficientTree( const NodeSet& vs, dai::RootedTree &Tree, size_t PreviousRoot ) const {
-  using dai::RootedTree;
+size_t JTree::findEfficientTree(const NodeSet& vs, RootedTree &Tree,
+    size_t PreviousRoot) const {
   using dai::BigInt;
   using std::set;
   using std::vector;
-  using dai::DEdge;
 
   // find new root clique (the one with maximal statespace overlap with vs)
   BigInt maxval = 0;
   size_t maxalpha = 0;
 
   // reorder the tree edges such that maxalpha becomes the new root
-  RootedTree newTree( dai::GraphEL(RTree.begin(), RTree.end() ), maxalpha);
+  RootedTree newTree(GraphEL(RTree.begin(), RTree.end()), maxalpha);
 
   // identify subtree that contains all variables of vs which are not in the new root
   set<DEdge> subTree;
@@ -429,8 +429,8 @@ size_t JTree::findEfficientTree( const NodeSet& vs, dai::RootedTree &Tree, size_
   // Resulting Tree is a reordered copy of newTree
   // First add edges in subTree to Tree
   Tree.clear();
-  vector<dai::DEdge> remTree;
-  for (dai::RootedTree::const_iterator e = newTree.begin(); e != newTree.end(); e++ )
+  vector<DEdge> remTree;
+  for (RootedTree::const_iterator e = newTree.begin(); e != newTree.end(); e++ )
     if( subTree.count( *e ) )
       Tree.push_back( *e );
     else
@@ -442,18 +442,16 @@ size_t JTree::findEfficientTree( const NodeSet& vs, dai::RootedTree &Tree, size_
   return subTreeSize;
 }
 
-
-Factor JTree::calcMarginal( const NodeSet& vs ) {
+Factor JTree::calcMarginal(const NodeSet& vs) {
   using std::vector;
   using std::map;
-  using dai::UEdge;
 
   vector<Factor>::const_iterator beta;
   for( beta = Qb.begin(); beta != Qb.end(); beta++ )
     if( beta->nodes() >> vs )
       break;
   if( beta != Qb.end() ) {
-    if( props.inference == Properties::InfType::SUMPROD )
+    if( props_.inference == Properties::InfType::SUMPROD )
       return( beta->marginal(vs) );
     else
       return( beta->maxMarginal(vs) );
@@ -463,13 +461,13 @@ Factor JTree::calcMarginal( const NodeSet& vs ) {
       if( alpha->nodes() >> vs )
         break;
     if( alpha != Qa.end() ) {
-      if( props.inference == Properties::InfType::SUMPROD )
+      if( props_.inference == Properties::InfType::SUMPROD )
         return( alpha->marginal(vs) );
       else
         return( alpha->maxMarginal(vs) );
     } else {
       // Find subtree to do efficient inference
-      dai::RootedTree T;
+      RootedTree T;
       size_t Tsize = findEfficientTree( vs, T );
 
       // Find remaining variables (which are not in the new root)
@@ -485,7 +483,7 @@ Factor JTree::calcMarginal( const NodeSet& vs ) {
         size_t alpha2 = T[i].second;
         size_t beta;
         for( beta = 0; beta < nrIRs(); beta++ )
-          if( dai::UEdge( RTree[beta].first, RTree[beta].second ) == UEdge( alpha1, alpha2 ) )
+          if (UEdge( RTree[beta].first, RTree[beta].second ) == UEdge( alpha1, alpha2 ) )
             break;
         DAI_ASSERT( beta != nrIRs() );
         b[i] = beta;
@@ -551,5 +549,21 @@ std::vector<Node*> JTree::findMaximum() const {
   return maximum;
 }
 
-
+size_t JTree::FindRoot(const vector<NodeSet> &cl) const {
+  size_t root = cl.size();
+  if (props_.root.size() > 0) {
+    size_t lightest = -1UL; 
+    root = 0;
+    for (size_t i = 0; i < cl.size(); i++) {
+      if (cl[i] >> props_.root) {
+        size_t s = cl[i].size();
+        if (s < lightest) {
+          lightest = s;
+          root = i;
+        }
+      }
+    }
+  }
+  return root;
+}
 } // end of namespace dai
