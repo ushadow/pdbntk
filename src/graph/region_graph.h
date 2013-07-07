@@ -1,15 +1,3 @@
-/*  This file is part of libDAI - http://www.libdai.org/
- *
- *  Copyright (c) 2006-2011, The libDAI authors. All rights reserved.
- *
- *  Use of this source code is governed by a BSD-style license that can be found in the LICENSE file.
- */
-
-
-/// \file
-/// \brief Defines classes Region, FRegion and RegionGraph, which implement a particular subclass of region graphs.
-
-
 #ifndef PDBNTK_REGIONGRAPH_H_ 
 #define PDBNTK_REGIONGRAPH_H_ 
 
@@ -206,9 +194,9 @@ class RegionGraph : public FactorGraph {
     /// \name Operations
     //@{
     /// Set the content of the \a I 'th factor and make a backup of its old content if \a backup == \c true
-    virtual void setFactor( size_t I, const Factor& newFactor, bool backup = false ) {
-      FactorGraph::setFactor( I, newFactor, backup );
-      recomputeOR( I );
+    virtual void setFactor(size_t I, const Factor& newFactor, bool backup = false) {
+      FactorGraph::setFactor(I, newFactor, backup);
+      recomputeOR(I);
     }
 
     /// Set the contents of all factors as specified by \a facs and make a backup of the old contents if \a backup == \c true

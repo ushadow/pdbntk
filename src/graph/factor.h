@@ -65,7 +65,7 @@ class Factor {
   size_t states() const { return states_; }
  
   /// Comparison
-  bool operator==( const Factor& y ) const {
+  bool operator==(const Factor& y) const {
     return (ns_ == y.ns_);
   }
  

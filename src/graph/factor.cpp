@@ -55,7 +55,7 @@ Factor Factor::operator*=(const Factor &f) const {
 }
 
 Factor Factor::operator*(const Factor &f) const {
-  return Factor();
+  return *this;
 }
 
 Factor Factor::operator/(const Factor &f) const {

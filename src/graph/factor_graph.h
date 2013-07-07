@@ -220,15 +220,15 @@ public:
   std::vector<NodeSet> maximalFactorDomains() const;
 
   /// Evaluates the log score (i.e., minus the energy) of the joint configuration \a statevec
-  float logScore( const std::vector<size_t>& statevec ) const;
+  Real logScore( const std::vector<size_t>& statevec ) const;
   //@}
 
   /// \name Backup/restore mechanism for factors
   //@{
   /// Set the content of the \a I 'th factor and make a backup of its old content if \a backup == \c true
-  virtual void setFactor( size_t I, const Factor& newFactor, bool backup = false ) {
-    DAI_ASSERT( newFactor.nodes() == factor(I).nodes() );
-    if( backup )
+  virtual void setFactor(size_t I, const Factor& newFactor, bool backup = false ) {
+    DAI_ASSERT(newFactor.nodes() == factor(I).nodes());
+    if(backup)
       backupFactor( I );
     _factors[I] = newFactor;
   }
@@ -286,7 +286,7 @@ public:
   /// Clamp the \a i 'th variable to value \a x (i.e. multiply with a Kronecker delta \f$\delta_{x_i, x}\f$)
   /** If \a backup == \c true, make a backup of all factors that are changed
   */
-  virtual void clamp(size_t i, std::vector<Real> x, bool backup = false);
+  virtual void clamp(size_t i, const std::vector<Real> &x, bool backup = false);
 
   /// Clamp a variable in a factor graph to have one out of a list of values
   /** If \a backup == \c true, make a backup of all factors that are changed

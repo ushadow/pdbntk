@@ -254,8 +254,8 @@ void JTree::runHUGIN() {
   // CollectEvidence
   logz_ = 0.0;
   for( size_t i = RTree.size(); (i--) != 0; ) {
-    //      Make outer region RTree[i].first consistent with outer region RTree[i].second
-    //      IR(i) = seperator OR(RTree[i].first) && OR(RTree[i].second)
+    //Make outer region RTree[i].first consistent with outer region RTree[i].second
+    //IR(i) = seperator OR(RTree[i].first) && OR(RTree[i].second)
     Factor new_Qb;
     if( props_.inference == Properties::InfType::SUMPROD )
       new_Qb = Qa[RTree[i].second].marginal( IR( i ), false );

@@ -10,6 +10,7 @@
 #include "dai/weightedgraph.h"
 #include "daialg.h"
 #include "graph/cluster_graph.h"
+#include "graph/factor_graph.h"
 
 #include <vector>
 #include <string>

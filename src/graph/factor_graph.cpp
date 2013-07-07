@@ -293,7 +293,7 @@ std::vector<NodeSet> FactorGraph::maximalFactorDomains() const {
 }
 
 
-Real FactorGraph::logScore( const std::vector<size_t>& statevec ) const {
+Real FactorGraph::logScore(const std::vector<size_t>& statevec) const {
   // Construct a State object that represents statevec
   // This decouples the representation of the joint state in statevec from the factor graph
   std::map<const Node*, size_t> statemap;
@@ -306,12 +306,14 @@ Real FactorGraph::logScore( const std::vector<size_t>& statevec ) const {
   return lS;
 }
 
-void FactorGraph::clamp(size_t i, std::vector<Real> x, bool backup) {
+void FactorGraph::clamp(size_t i, const std::vector<Real> &x, bool backup) {
   Factor mask(node(i));
 
   std::map<size_t, Factor> newFacs;
-  bforeach( const dai::Neighbor &I, nbV(i) )
+  bforeach(const dai::Neighbor &I, nbV(i)) {
+    DLOG(INFO) << factor(I);
     newFacs[I] = factor(I) * mask;
+  }
   setFactors(newFacs, backup);
 
   return;
@@ -322,7 +324,7 @@ void FactorGraph::clampVar( size_t i, const std::vector<size_t> &is, bool backup
   Factor mask_n(n);
 
   std::map<size_t, Factor> newFacs;
-  bforeach( const dai::Neighbor &I, nbV(i) )
+  bforeach(const dai::Neighbor &I, nbV(i))
     newFacs[I] = factor(I) * mask_n;
   setFactors( newFacs, backup );
 }

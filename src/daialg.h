@@ -72,7 +72,7 @@ class InfAlg {
         /// Runs the approximate inference algorithm.
         /** \note Before run() is called the first time, init() should have been called.
          */
-        virtual float run() = 0;
+        virtual Real run() = 0;
 
         /// Returns the (approximate) marginal probability distribution of a variable.
         /** \note Before this method is called, run() should have been called.
@@ -107,7 +107,7 @@ class InfAlg {
         /** \note Before this method is called, run() should have been called.
          *  \throw NOT_IMPLEMENTED if not implemented/supported
          */
-        virtual float logZ() const = 0;
+        virtual Real logZ() const = 0;
 
         /// Calculates the joint state of all variables that has maximum probability
         /** \note Before this method is called, run() should have been called.
@@ -118,7 +118,7 @@ class InfAlg {
         /// Returns maximum difference between single variable beliefs in the last iteration.
         /** \throw NOT_IMPLEMENTED if not implemented/supported
          */
-        virtual float maxDiff() const { DAI_THROW(NOT_IMPLEMENTED); };
+        virtual Real maxDiff() const { DAI_THROW(NOT_IMPLEMENTED); };
 
         /// Returns number of iterations done (one iteration passes over the complete factorgraph).
         /** \throw NOT_IMPLEMENTED if not implemented/supported
@@ -136,7 +136,8 @@ class InfAlg {
         /// Clamp variable with index \a i to value \a x (i.e. multiply with a Kronecker delta \f$\delta_{x_i, x}\f$)
         /** If \a backup == \c true, make a backup of all factors that are changed.
          */
-        virtual void clamp( size_t i, std::vector<Real>, bool backup = false ) = 0;
+        virtual void clamp( size_t i, const std::vector<Real>&,
+            bool backup = false) = 0;
 
         /// Sets all factors interacting with variable with index \a i to one.
         /** If \a backup == \c true, make a backup of all factors that are changed.
@@ -213,7 +214,8 @@ class DAIAlg : public InfAlg, public GRM {
         /// Clamp variable with index \a i to value \a x (i.e. multiply with a Kronecker delta \f$\delta_{x_i, x}\f$)
         /** If \a backup == \c true, make a backup of all factors that are changed.
          */
-        void clamp( size_t i, std::vector<Real> x, bool backup = false ) { GRM::clamp( i, x, backup ); }
+        void clamp(size_t i, const std::vector<Real> &x, bool backup = false) {
+            GRM::clamp( i, x, backup ); }
 
         /// Sets all factors interacting with variable with index \a i to one.
         /** If \a backup == \c true, make a backup of all factors that are changed.

@@ -13,6 +13,7 @@ using pdbntk::Factor;
 using pdbntk::CondProbDist;
 using pdbntk::CPDFactory;
 using pdbntk::JTree;
+using pdbntk::Real;
 using dai::PropertySet;
 using std::shared_ptr;
 using std::vector;
@@ -103,6 +104,11 @@ TEST_F(JTreeTestF, Properties) {
   NodeSet ns = ps.getAs<NodeSet>("root");
   NodeSet expected(n5_.get(), n6_.get());
   EXPECT_EQ(expected | n7_.get(), ns);
+}
+
+TEST_F(JTreeTestF, Clamp) {
+  vector<Real> x(1, 1);
+  jtree_->clamp(1, x); 
 }
 
 TEST(JTreeTest, DifferentFG) {

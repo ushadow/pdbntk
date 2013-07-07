@@ -37,5 +37,12 @@ void JTree2TBNInfEngine::Fwd(const Evidence::Observation &o, int t) {
   /// Collect evidence to root
 }
 
+void JTree2TBNInfEngine::Fwd1(const Evidence::Observation &o, int t) {
+  for (Evidence::Observation::const_iterator i = o.begin(); i != o.end(); i++)
+    jtree_engine1_->clamp(jtree_engine1_->fg().findNode(i->first), i->second);
+  jtree_engine1_->init();
+  jtree_engine1_->run();
+}
+
 
 }
