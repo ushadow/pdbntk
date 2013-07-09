@@ -6,71 +6,51 @@ using namespace std;
 
 namespace pdbntk {
 
-Node::Node(uint ni, CondProbDist *cpd, bool observed) : 
-    index_(ni), cpd_(cpd), observed_(observed), is_constructed(false) {}
+Node::Node(uint ni, uint di, CondProbDist *cpd, bool observed) : 
+    node_index_(ni), data_index_(di), cpd_(cpd), observed_(observed) {}
 
 Node::~Node() {} 
 
-uint Node::size() const {
+uint Node::Size() const {
   if (observed_)
     return 1;
   else
-    return cpd_->node_size();
+    return cpd_->NodeSize();
 }
 
 void Node::set_data_index(uint di) {
-	data_index = di;
+	data_index_ = di;
 }
 
-void Node::add_intra_child(Node* n) {
-	// Add an intra-slice child.
-	// child node (same slice) of current node
-	children_1.push_back(n);
-}
-
-void Node::add_inter_child(Node* n) {
-	// Add a child in the previous slice.
-	// child node (previous slice) of current node
-	children_2.push_back(n);
-}
-
-void Node::add_inter_parent(uint data_index, uint node_size) {
-	// Add a parent in the previous slice.
-	// node_size: output size of parent
-	parents_0.push_back(data_index);
-	parents_0_sizes.push_back(node_size);
-}
-
-void Node::add_intra_parent(uint data_index, uint node_size) {
+void Node::add_parent(uint data_index, uint node_size) {
 	// Add an intra-slice parent.
 	// node_size: output size of parent
-	parents_1.push_back(data_index);
-	parents_1_sizes.push_back(node_size);
-}
-
-void Node::set_parentmap(mocapy::ParentMap * pm) {
-	parentmap = *pm;
-	seq_len = parentmap.lng;
+	parents_.push_back(data_index);
+	parents_sizes_.push_back(node_size);
 }
 
 bool Node::operator< (const Node &n) const {
-  return index_ < n.index_;
+  return node_index_ < n.node_index_;
 }
 
 bool Node::operator> (const Node &n) const { 
-  return index_ > n.index_; 
+  return node_index_ > n.node_index_; 
 }
 
 bool Node::operator>= (const Node &n) const { 
-  return index_ >= n.index_; 
+  return node_index_ >= n.node_index_; 
 }
 
 bool Node::operator<= (const Node &n) const { 
-  return index_ <= n.index_; 
+  return node_index_ <= n.node_index_; 
 }
 
 bool Node::operator!= (const Node &n) const { 
-  return index_ > n.index_; 
+  return node_index_ > n.node_index_; 
 }
 
+const Factor& Node::UpdateFactor(const std::vector<Real> &ev) {
+  
+  return *factor_; 
+}
 }

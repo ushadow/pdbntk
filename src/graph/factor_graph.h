@@ -6,6 +6,7 @@
 
 #include <dai/bipgraph.h>
 #include "factor.h"
+#include "node.h"
 
 #include <iostream>
 #include <map>
@@ -58,7 +59,7 @@ class FactorGraph {
 private:
 /// Stores the neighborhood structure
 dai::BipartiteGraph           _G;
-/// Stores the nodes in sorted order.
+/// Stores the nodes in sorted order according to their 0-based indices.
 std::vector<Node*>         nodes_;
 /// Stores the factors
 std::vector<Factor>      _factors;
@@ -72,7 +73,7 @@ public:
   FactorGraph() : _G(), nodes_(), _factors(), _backup() {}
 
   /// Constructs a factor graph from a vector of factors
-  FactorGraph( const std::vector<Factor>& P );
+  FactorGraph(const std::vector<Factor>& P);
 
   /// Constructs a factor graph from given factor and variable iterators
   /** \tparam FactorInputIterator Iterates over instances of type dai::Factor
@@ -135,11 +136,12 @@ public:
   /** \note Time complexity: O(nrNodes())
    *  \throw OBJECT_NOT_FOUND if the variable is not part of this factor graph
    */
-  size_t findNode(const Node *n) const {
-    size_t i = find(nodes().begin(), nodes().end(), n) - nodes().begin();
-    if( i == nrNodes() )
-      DAI_THROW(OBJECT_NOT_FOUND);
-    return i;
+  size_t findNode(size_t index) const {
+    for (size_t i = 0; i < nrNodes(); i++) {
+      if (nodes_[i]->node_index() == index)
+        return i;
+    } 
+    DAI_THROW(OBJECT_NOT_FOUND);
   }
 
   /// Returns a set of indexes corresponding to a set of variables
@@ -149,7 +151,7 @@ public:
   dai::SmallSet<size_t> findNodes(const NodeSet& ns) const {
     dai::SmallSet<size_t> result;
     for( NodeSet::const_iterator n = ns.begin(); n != ns.end(); n++ )
-      result.insert(findNode(*n));
+      result.insert(findNode((*n)->node_index()));
     return result;
   }
 
@@ -365,8 +367,6 @@ FactorGraph::FactorGraph(FactorInputIterator facBegin, FactorInputIterator facEn
  *  write it to a file.
  */
 
-
 } 
-
 
 #endif // PDBNTK_FACTOR_GRAPH_H_

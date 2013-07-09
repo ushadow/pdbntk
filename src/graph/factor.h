@@ -4,7 +4,6 @@
 #ifndef PDBNTK_FACTOR_H_ 
 #define PDBNTK_FACTOR_H_ 
 
-#include "node.h"
 #include "node_set.h"
 #include "../util.h"
 
@@ -14,6 +13,8 @@
 #include <memory>
 
 namespace pdbntk {
+
+class Node;
 
 /// Represents a potential factor.
 /** Mathematically, a \e factor is a function mapping joint states of some
@@ -48,9 +49,10 @@ class Factor {
   size_t states_;
 
  public:
-  Factor() : ns_() {}
+  /// Creates an empty factor.
+  Factor() : ns_(), states_(0) {}
   /// Constructs factor depending on the node \a n. 
-  Factor(Node *n) : ns_(n) {}
+  Factor(Node *n);
  
   /// Constructs factor depending on variables in \a vars with uniform distribution
   Factor(const NodeSet& nodes) : ns_(nodes) {}

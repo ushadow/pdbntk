@@ -31,7 +31,7 @@ class Node;
 class Evidence {
   public:
       /// Stores joint state of a set of variables
-      typedef std::map<Node*, std::vector<Real> > Observation;
+      typedef std::map<size_t, std::vector<Real> > Observation;
 
   private:
       /// Each sample is an observed joint state of some variables

@@ -30,14 +30,22 @@ class JTreeTestF : public testing::Test {
     cpd5_.reset(CPDFactory::NewDiscreteCPD(13));
     cpd6_.reset(CPDFactory::NewDiscreteCPD(44));
 
-    n1_.reset(new Node(1, cpd1_.get(), true));
-    n2_.reset(new Node(2, cpd2_.get()));
-    n3_.reset(new Node(3, cpd3_.get(), true));
-    n4_.reset(new Node(4, cpd4_.get(), true));
-    n5_.reset(new Node(5, cpd5_.get(), true));
-    n6_.reset(new Node(6, cpd6_.get()));
-    n7_.reset(new Node(7, cpd3_.get(), true));
-    n8_.reset(new Node(8, cpd4_.get(), true));
+    uint di = 0;
+    n1_.reset(new Node(1, di, cpd1_.get(), true));
+    di += cpd1_->NodeSize();
+    n2_.reset(new Node(2, di, cpd2_.get()));
+    di += cpd2_->NodeSize();
+    n3_.reset(new Node(3, di, cpd3_.get(), true));
+    di += cpd3_->NodeSize();
+    n4_.reset(new Node(4, di, cpd4_.get(), true));
+    di += cpd4_->NodeSize();
+    n5_.reset(new Node(5, di, cpd5_.get(), true));
+    di += cpd5_->NodeSize();
+    n6_.reset(new Node(6, di, cpd6_.get()));
+    di += cpd6_->NodeSize();
+    n7_.reset(new Node(7, di, cpd3_.get(), true));
+    di += cpd3_->NodeSize();
+    n8_.reset(new Node(8, di, cpd4_.get(), true));
 
     NodeSet ns1(n1_.get(), n2_.get());
     factors.push_back(Factor(ns1 | n3_.get()));
@@ -71,7 +79,7 @@ bool IsEqFactor(const uint expected[], Factor f) {
   bool ret = true;
   const vector<Node*> &ns = f.nodes().elements();
   for (uint i = 0; i < ns.size(); i++) {
-    ret = ret && (expected[i] == ns[i]->index()); 
+    ret = ret && (expected[i] == ns[i]->node_index()); 
   }
   return ret;
 }
@@ -119,10 +127,14 @@ TEST(JTreeTest, DifferentFG) {
   unique_ptr<CondProbDist> cpd3(CPDFactory::NewDiscreteCPD(2));
   unique_ptr<CondProbDist> cpd4(CPDFactory::NewGaussianCPD(9));
 
-  Node n1(1, cpd1.get(), true);
-  Node n2(2, cpd2.get());
-  Node n3(3, cpd3.get(), true);
-  Node n4(4, cpd4.get(), true);
+  uint di = 0;
+  Node n1(1, di, cpd1.get(), true);
+  di += cpd1->NodeSize();
+  Node n2(2, di, cpd2.get());
+  di += cpd2->NodeSize();
+  Node n3(3, di, cpd3.get(), true);
+  di += cpd3->NodeSize();
+  Node n4(4, di, cpd4.get(), true);
 
   NodeSet ns1(&n1, &n2);
   factors.push_back(Factor(ns1 | &n3));

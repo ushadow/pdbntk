@@ -14,7 +14,7 @@ void Evidence::addEvidenceTabFile( std::istream &is, FactorGraph &fg ) {
   std::map<std::string, Node*> varMap;
   for (std::vector<Node*>::const_iterator v = fg.nodes().begin(); v != fg.nodes().end(); ++v ) {
     std::stringstream s;
-    s << (*v)->index();
+    s << (*v)->node_index();
     varMap[s.str()] = *v;
   }
 

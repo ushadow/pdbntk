@@ -23,7 +23,7 @@ FactorGraph::FactorGraph(const std::vector<Factor> &P) : _G(), _backup() {
   _factors.reserve(P.size());
   size_t nrEdges = 0;
   for (std::vector<Factor>::const_iterator p2 = P.begin(); p2 != P.end(); p2++ ) {
-    _factors.push_back( *p2 );
+    _factors.push_back(*p2);
     copy(p2->nodes().begin(), p2->nodes().end(), inserter(varset, varset.begin()));
     nrEdges += p2->nodes().size();
   }
@@ -35,7 +35,7 @@ FactorGraph::FactorGraph(const std::vector<Factor> &P) : _G(), _backup() {
   }
 
   // create graph structure
-  constructGraph( nrEdges );
+  constructGraph(nrEdges);
 }
 
 void FactorGraph::constructGraph( size_t nrEdges ) {
@@ -45,7 +45,7 @@ void FactorGraph::constructGraph( size_t nrEdges ) {
   dai::hash_map<size_t, size_t> hashmap;
 
   for( size_t i = 0; i < nodes().size(); i++ )
-    hashmap[node(i)->index()] = i;
+    hashmap[node(i)->node_index()] = i;
 
   // create edge list
   std::vector<Edge> edges;
@@ -53,7 +53,7 @@ void FactorGraph::constructGraph( size_t nrEdges ) {
   for( size_t i2 = 0; i2 < nrFactors(); i2++ ) {
     const NodeSet& ns = factor(i2).nodes();
     for( NodeSet::const_iterator q = ns.begin(); q != ns.end(); q++ )
-      edges.push_back(Edge(hashmap[(*q)->index()], i2) );
+      edges.push_back(Edge(hashmap[(*q)->node_index()], i2) );
   }
 
   // create bipartite graph
@@ -71,7 +71,7 @@ std::ostream& operator<< ( std::ostream &os, const FactorGraph &fg ) {
     os << endl;
     os << fg.factor(I).nodes().size() << endl;
     for( NodeSet::const_iterator i = fg.factor(I).nodes().begin(); i != fg.factor(I).nodes().end(); i++ )
-      os << (*i)->index() << " ";
+      os << (*i)->node_index() << " ";
     os << endl;
     for( NodeSet::const_iterator i = fg.factor(I).nodes().begin(); i != fg.factor(I).nodes().end(); i++ )
     os << endl;
@@ -170,7 +170,7 @@ NodeSet FactorGraph::Delta( size_t i ) const {
 NodeSet FactorGraph::Delta( const NodeSet &ns ) const {
   NodeSet result;
   for (NodeSet::const_iterator n = ns.begin(); n != ns.end(); n++)
-    result |= Delta(findNode(*n));
+    result |= Delta(findNode((*n)->node_index()));
   return result;
 }
 
@@ -212,13 +212,13 @@ void FactorGraph::printDot( std::ostream &os ) const {
   os << "graph FactorGraph {" << endl;
   os << "node[shape=circle,width=0.4,fixedsize=true];" << endl;
   for( size_t i = 0; i < nrNodes(); i++ )
-    os << "\tv" << node(i)->index() << ";" << endl;
+    os << "\tv" << node(i)->node_index() << ";" << endl;
   os << "node[shape=box,width=0.3,height=0.3,fixedsize=true];" << endl;
   for( size_t I = 0; I < nrFactors(); I++ )
     os << "\tf" << I << ";" << endl;
   for( size_t i = 0; i < nrNodes(); i++ )
     bforeach( const dai::Neighbor &I, nbV(i) )  // for all neighboring factors I of i
-      os << "\tv" << node(i)->index() << " -- f" << I << ";" << endl;
+      os << "\tv" << node(i)->node_index() << " -- f" << I << ";" << endl;
   os << "}" << endl;
 }
 
@@ -307,15 +307,6 @@ Real FactorGraph::logScore(const std::vector<size_t>& statevec) const {
 }
 
 void FactorGraph::clamp(size_t i, const std::vector<Real> &x, bool backup) {
-  Factor mask(node(i));
-
-  std::map<size_t, Factor> newFacs;
-  bforeach(const dai::Neighbor &I, nbV(i)) {
-    DLOG(INFO) << factor(I);
-    newFacs[I] = factor(I) * mask;
-  }
-  setFactors(newFacs, backup);
-
   return;
 }
 

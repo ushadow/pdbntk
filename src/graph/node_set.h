@@ -1,17 +1,16 @@
 #ifndef PDBNTK_NODE_SET_H_
 #define PDBNTK_NODE_SET_H_
 
-#include "node.h"
 #include <vector>
 #include <algorithm>
 #include <iostream>
 
 namespace pdbntk {
 
+class Node;
+
 struct NodeComparator {
-  bool operator()(const Node* n1, const Node* n2) const {
-    return *n1 < *n2;
-  }
+  bool operator()(const Node* n1, const Node* n2) const; 
 };
 
 /// Represents a set; the implementation is optimized for a small number of elements.
@@ -36,16 +35,7 @@ class NodeSet {
     }
 
     /// Construct a set consisting of two elements
-    NodeSet(Node *t1, Node *t2) {
-      if(*t1 < *t2) {
-        _elements.push_back(t1);
-        _elements.push_back(t2);
-      } else if (*t2 < *t1) {
-        _elements.push_back(t2);
-        _elements.push_back(t1);
-      } else
-        _elements.push_back(t1);
-    }
+    NodeSet(Node *t1, Node *t2);
 
     /// Construct a NodeSet from a range of elements.
     /** \tparam TIterator Iterates over instances of type \a T.

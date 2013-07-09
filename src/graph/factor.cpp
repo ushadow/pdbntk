@@ -1,4 +1,5 @@
 #include "factor.h"
+#include "node.h"
 
 #include "dai/util.h"
 
@@ -41,6 +42,8 @@ Factor createFactorDelta( const NodeSet& vs, size_t state ) {
   Factor fac(vs);
   return fac;
 }
+
+Factor::Factor(Node *n) : ns_(n), states_(n->Size()) {}
 
 Factor Factor::operator*(Real x) const {
  return Factor();

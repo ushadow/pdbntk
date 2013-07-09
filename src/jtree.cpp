@@ -105,9 +105,7 @@ JTree::JTree(const FactorGraph &fg, const dai::PropertySet &opts, bool automatic
 
 void JTree::construct(const FactorGraph &fg, const vector<NodeSet> &cl,
                       bool verify) {
-  // Copy the factor graph
   FactorGraph::operator=(fg);
-
   // Construct a weighted graph (each edge is weighted with the cardinality
   // of the intersection of the nodes, where the nodes are the elements of cl).
   WeightedGraph<int> JuncGraph;

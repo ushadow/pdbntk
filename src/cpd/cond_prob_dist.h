@@ -21,7 +21,7 @@ public:
 
 /// Accessors
 //@{
-  uint node_size() const { return density_->get_node_size(); }
+  uint NodeSize() const { return density_->get_node_size(); }
   mocapy::DensitiesBase* get_densities() { return density_.get(); }
 //@}
 

@@ -93,7 +93,7 @@ size_t eliminationCost_MinWeight( const ClusterGraph &cl, size_t i ) {
 
   size_t cost = 1;
   for( SmallSet<size_t>::const_iterator it = id_n.begin(); it != id_n.end(); it++)
-    cost *= cl.nodes()[*it]->size();
+    cost *= cl.nodes()[*it]->Size();
 
   return cost;
 }
@@ -126,7 +126,7 @@ size_t eliminationCost_WeightedMinFill(const ClusterGraph &cl, size_t i) {
       if(it1 != it2) {
         // if i1 and i2 are not adjacent, eliminating n would make them adjacent
         if(!cl.adj(*it1, *it2))
-          cost += cl.nodes()[*it1]->size() * cl.nodes()[*it2]->size();
+          cost += cl.nodes()[*it1]->Size() * cl.nodes()[*it2]->Size();
       }
 
   return cost;
